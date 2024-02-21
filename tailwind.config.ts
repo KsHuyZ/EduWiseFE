@@ -24,6 +24,7 @@ export default {
           950: 'rgb(var(--tw-color-primary-950) / <alpha-value>)',
         },
         dark: '#222222',
+        error: '#dc2626',
       },
       keyframes: {
         flicker: {
@@ -45,10 +46,18 @@ export default {
             backgroundPosition: '700px 0',
           },
         },
+        fadetop: {
+          from: {
+            top: '-20px',
+            opacity: '0',
+          },
+          to: { top: '0', opacity: '1' },
+        },
       },
       animation: {
         flicker: 'flicker 3s linear infinite',
         shimmer: 'shimmer 1.3s linear infinite',
+        fadetop: 'fadetop 0.4s',
       },
     },
   },
