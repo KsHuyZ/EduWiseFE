@@ -1,15 +1,68 @@
 'use client';
+import { useFormik } from 'formik';
 import Link from 'next/link';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import toast from 'react-hot-toast';
+import * as Yup from 'yup';
+
+import { setCookies } from '@/lib/action';
 
 import Button from '@/components/buttons/Button';
+import Input from '@/components/inputs/Input';
 import NextImage from '@/components/NextImage';
 
-const SignIn = () => {
-  const handleSubmit = (values: any) => {
-    return;
-  };
+import signIn from '@/app/(auth)/sign-in/api/signIn';
+import { UserCredentials } from '@/app/(auth)/sign-in/types/usercredential';
+import { validatError } from '@/utils';
 
+const { object, string, boolean } = Yup;
+
+const initialValues: UserCredentials = {
+  email: '',
+  password: '',
+  rememberMe: false,
+};
+
+const validationSchema = object({
+  email: string().email('Invalid email format').required('Email is required'),
+  password: string().required('Password is required'),
+  rememberMe: boolean(),
+});
+
+const SignIn = () => {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const onSubmit = async (values: UserCredentials) => {
+    try {
+      setLoading(true);
+      const result = await signIn(values);
+      const { token, refreshToken, userResponse } = result;
+      await setCookies('token', { token, refreshToken });
+      await setCookies('user', userResponse);
+      toast.success('Login Success');
+      router.replace('/');
+    } catch (error: any) {
+      toast.error(validatError(error));
+      if (error && error.data) {
+        const items = error.data.items as UserCredentials;
+        if (items?.email) {
+          formik.setFieldError('email', items?.email);
+        }
+        if (items?.password) {
+          formik.setFieldError('password', items?.password);
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  const formik = useFormik({
+    validationSchema,
+    initialValues,
+    onSubmit,
+    validateOnChange: false,
+  });
   return (
     <div className='bg-gray-50 dark:bg-gray-900'>
       <div className='flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0'>
@@ -31,39 +84,32 @@ const SignIn = () => {
             <h1 className='text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white'>
               Sign in to your account
             </h1>
-            <form className='space-y-4 md:space-y-6' onSubmit={handleSubmit}>
-              <div>
-                <label
-                  htmlFor='email'
-                  className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
-                >
-                  Your email
-                </label>
-                <input
-                  type='email'
-                  name='email'
-                  id='email'
-                  className='bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                  placeholder='name@company.com'
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor='password'
-                  className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
-                >
-                  Password
-                </label>
-                <input
-                  type='password'
-                  name='password'
-                  id='password'
-                  placeholder='••••••••'
-                  className='bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                  required
-                />
-              </div>
+            <form
+              className='space-y-4 md:space-y-6'
+              onSubmit={formik.handleSubmit}
+            >
+              <Input
+                htmlFor='email'
+                label='Your email'
+                type='email'
+                name='email'
+                placeholder='name@company.com'
+                required
+                value={formik.values.email}
+                error={formik.errors.email}
+                onChange={formik.handleChange}
+              />
+              <Input
+                htmlFor='password'
+                label='Password'
+                type='password'
+                name='password'
+                placeholder='••••••••'
+                required
+                value={formik.values.password}
+                error={formik.errors.password}
+                onChange={formik.handleChange}
+              />
               <div className='flex items-center justify-between'>
                 <div className='flex items-start'>
                   <div className='flex items-center h-5'>
@@ -72,7 +118,9 @@ const SignIn = () => {
                       aria-describedby='remember'
                       type='checkbox'
                       className='w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800'
-                      required
+                      name='rememberMe'
+                      onChange={formik.handleChange}
+                      // {formik.values.rememberMe ? checked : false}
                     />
                   </div>
                   <div className='ml-3 text-sm'>
@@ -95,6 +143,7 @@ const SignIn = () => {
                 type='submit'
                 variant='primary'
                 className='block w-full text-center'
+                isLoading={loading}
               >
                 Sign in
               </Button>

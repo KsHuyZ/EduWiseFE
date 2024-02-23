@@ -5,11 +5,11 @@ import type {
 } from 'axios';
 import Axios from 'axios';
 
-import { getCookies, setCookies } from '@/lib/helper';
+import { getCookies, setCookies } from '@/lib/action';
 
 import refreshTokenApi from '@/api/refreshToken';
 
-import { UserType } from '@/types';
+import { Token } from '@/types';
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const axios = Axios.create({
@@ -31,9 +31,9 @@ axios.interceptors.response.use(onResponseSuccess, onResponseError);
 
 axios.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
-    const user = (await getCookies('user')) as UserType;
-    if (user) {
-      config.headers.Authorization = `Bearer ${user.token}`;
+    const token = (await getCookies('token')) as Token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token.token}`;
     }
     return config;
   },
@@ -49,12 +49,12 @@ axios.interceptors.response.use(
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
-      const user = (await getCookies('user')) as UserType;
-      const refreshToken = user.refreshToken;
+      const token = (await getCookies('user')) as Token;
+      const refreshToken = token.refreshToken;
       if (!refreshToken) {
         const result = await refreshTokenApi(refreshToken);
         const { token, refreshToken: newRefreshToken } = result;
-        setCookies('user', { ...user, token, refreshToken: newRefreshToken });
+        setCookies('token', { token, refreshToken: newRefreshToken });
         originalRequest.headers = {
           Authorization: 'Bearer ' + result.token,
         };
