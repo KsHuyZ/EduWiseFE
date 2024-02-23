@@ -10,7 +10,7 @@ export const generateNameColor = (name: string) => {
 };
 
 export const validatError = (error: any) => {
-  if (error && error.data.message) {
+  if (error && error?.data?.message) {
     return error.data.message;
   }
   return 'Something went wrong';

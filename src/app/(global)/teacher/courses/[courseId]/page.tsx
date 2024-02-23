@@ -1,9 +1,6 @@
-import { LayoutDashboard } from 'lucide-react';
 import React from 'react';
 
 import { Banner } from '@/components/banner';
-
-import TitleForm from '@/app/(global)/teacher/courses/[courseId]/components/title-form';
 
 const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
   const { courseId } = params;

@@ -1,3 +1,4 @@
+'use client';
 import { BarChart, Compass, Layout, List, LucideIcon } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
