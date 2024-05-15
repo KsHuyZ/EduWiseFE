@@ -13,3 +13,11 @@ export type SignInResponse = {
   };
   userResponse: UserType;
 } & Token;
+
+export type TableApiResponse<T> = {
+  page: number;
+  pages: number;
+  size: number;
+  total: number;
+  items: T;
+};

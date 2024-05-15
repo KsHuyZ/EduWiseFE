@@ -1,4 +1,3 @@
-import NextTopLoader from 'nextjs-toploader';
 import React from 'react';
 
 import Navbar from '@/app/(global)/components/navbar';
@@ -7,7 +6,6 @@ import Sidebar from '@/app/(global)/components/sidebar';
 const GlobalLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <NextTopLoader color='var(--color-primary-700)' />
       <div className='h-full'>
         <div className='h-[80px] md:pl-56 fixed inset-y-0 w-full z-50'>
           <Navbar />

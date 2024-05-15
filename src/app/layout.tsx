@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import NextTopLoader from 'nextjs-toploader';
 import * as React from 'react';
 import { Toaster } from 'react-hot-toast';
 
@@ -59,6 +60,7 @@ export default function RootLayout({
   return (
     <html>
       <body>
+        <NextTopLoader color='var(--color-primary-700)' />
         <Toaster />
         <Providers>{children}</Providers>
       </body>

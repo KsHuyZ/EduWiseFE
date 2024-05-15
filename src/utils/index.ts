@@ -9,9 +9,14 @@ export const generateNameColor = (name: string) => {
   return `#${paddedColor}`;
 };
 
-export const validatError = (error: any) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const validateError = (error: any) => {
   if (error && error?.data?.message) {
     return error.data.message;
   }
   return 'Something went wrong';
 };
+
+export * from './format';
+export * from './test';
+export * from './validate';

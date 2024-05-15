@@ -10,8 +10,9 @@ import NextImage from '@/components/NextImage';
 import RegisterForm from '@/components/register-form';
 
 import signUp from '@/app/(auth)/sign-up/api/signUp';
-import { UserCredentials } from '@/app/(auth)/sign-up/types/usercredential';
-import { validatError } from '@/utils';
+import { UserCredentials } from '@/app/(auth)/sign-up/types';
+import { validateError } from '@/utils';
+import teacherSignUp from '@/api/signUp';
 
 const { object, string } = Yup;
 
@@ -39,28 +40,30 @@ const SignUp = () => {
   const onSubmit = async (values: UserCredentials) => {
     try {
       setLoading(true);
-      await signUp(values);
+      await teacherSignUp(values);
       toast.success('Sign In success');
       router.replace('/sign-in');
     } catch (error: any) {
-      if (validatError(error)) {
-        toast.error(validatError(error));
-        const { email, firstName, lastName, password, passwordConfirm } =
-          error.items as UserCredentials;
-        if (email) {
-          formik.setFieldError('email', email);
-        }
-        if (firstName) {
-          formik.setFieldError('firstName', firstName);
-        }
-        if (lastName) {
-          formik.setFieldError('lastName', lastName);
-        }
-        if (password) {
-          formik.setFieldError('password', password);
-        }
-        if (passwordConfirm) {
-          formik.setFieldError('passwordConfirm', passwordConfirm);
+      if (validateError(error)) {
+        toast.error(validateError(error));
+        if (error && error.data) {
+          const { email, firstName, lastName, password, passwordConfirm } =
+            error.data.items as UserCredentials;
+          if (email) {
+            formik.setFieldError('email', email);
+          }
+          if (firstName) {
+            formik.setFieldError('firstName', firstName);
+          }
+          if (lastName) {
+            formik.setFieldError('lastName', lastName);
+          }
+          if (password) {
+            formik.setFieldError('password', password);
+          }
+          if (passwordConfirm) {
+            formik.setFieldError('passwordConfirm', passwordConfirm);
+          }
         }
       }
     } finally {

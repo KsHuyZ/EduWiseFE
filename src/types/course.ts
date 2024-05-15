@@ -1,21 +1,47 @@
-export type CourseType = {
-  title: string;
+import { CategoryType, ImageType, TagType } from '@/types';
+
+export type CourseCredentials = {
+  name: string;
   description: string;
-  imageUrl: string;
-  categoryId: string;
-  chapter: ChapterType[];
+  level: string;
+  discount: number;
+  price: number | string;
+  tags: TagType[];
+  categories: CategoryType[];
+  file?: FileList | null;
+  status?: string;
 };
 
-export type ChapterType = {
+export type CourseType = {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  file: ImageType;
+  categories: CategoryType[];
+  tags: TagType[];
+  chapters?: Lesson[];
+};
+
+export type Video = {
   id: string;
   title: string;
-  videoUrl: string;
   description: string;
-  position: number;
-  isPublish: boolean;
-  isFinal: boolean;
-  isFree: boolean;
-  courseId: string;
-  createdAt: string;
-  updatedAt: string;
+  videoUrl: string;
+  preview: boolean;
+  type: 'video' | 'quiz';
 };
+
+export type LessonCredentials = {
+  id?: string;
+  title: string;
+  content?: string;
+  idCourse?: string;
+};
+
+export type Lesson = {
+  id: string;
+  ordinalNumber?: number;
+  isPublish?: boolean;
+  videos: Video[];
+} & LessonCredentials;

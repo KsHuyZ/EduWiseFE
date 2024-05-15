@@ -11,7 +11,6 @@ import refreshTokenApi from '@/api/refreshToken';
 
 import { Token } from '@/types';
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
 const axios = Axios.create({
   baseURL: API_URL,
 });
@@ -49,7 +48,7 @@ axios.interceptors.response.use(
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
-      const token = (await getCookies('user')) as Token;
+      const token = (await getCookies('token')) as Token;
       const refreshToken = token.refreshToken;
       if (!refreshToken) {
         const result = await refreshTokenApi(refreshToken);
