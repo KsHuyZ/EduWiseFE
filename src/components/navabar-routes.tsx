@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormik } from 'formik';
-import { LogInIcon, LogOutIcon, Settings } from 'lucide-react';
+import { LogInIcon, LogOutIcon, Moon, Settings, Sun } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -11,15 +11,6 @@ import { deleteCookie } from '@/lib/action';
 import { cn } from '@/lib/utils';
 
 import Button from '@/components/buttons/Button';
-import RegisterForm from '@/components/register-form';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,10 +19,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Label } from '@/components/ui/label';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 
-import signOut from '@/api/signOut';
-import { UserCredentials } from '@/app/(auth)/sign-up/types/usercredential';
-import { generateNameColor, validatError } from '@/utils';
+import teacherSignUp from '@/api/signUp';
+import { UserCredentials } from '@/app/(auth)/sign-up/types';
+import { generateNameColor, validateError } from '@/utils';
 
 import { UserType } from '@/types';
 
@@ -66,12 +67,12 @@ const NavbarRoutes = ({ user }: { user?: UserType }) => {
   const onSubmit = async (values: UserCredentials) => {
     try {
       setLoading(true);
-      // await signUp(values);
+      await teacherSignUp(values);
       toast.success('Sign up success');
       router.replace('/sign-in');
     } catch (error: any) {
-      if (validatError(error)) {
-        toast.error(validatError(error));
+      if (validateError(error)) {
+        toast.error(validateError(error));
         const { email, firstName, lastName, password, passwordConfirm } =
           error.items as UserCredentials;
         if (email) {
@@ -101,7 +102,7 @@ const NavbarRoutes = ({ user }: { user?: UserType }) => {
     validateOnChange: false,
   });
   const handleSignOut = async () => {
-    await signOut();
+    // await signOut();
     router.replace('/sign-in');
     await deleteCookie('user');
     await deleteCookie('token');
@@ -121,52 +122,67 @@ const NavbarRoutes = ({ user }: { user?: UserType }) => {
           <Button variant='ghost'>Teacher mode</Button>
         </Link>
       )} */}
-      {user ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <div
-              className='flex h-8 w-8 items-center justify-center rounded-full text-white'
-              style={{
-                background: generateNameColor(
-                  cn(user.firstName, user.lastName)
-                ),
-              }}
-            >
-              {cn(user.firstName, user.lastName).charAt(0)}
+      <div className='flex items-center space-x-4'>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Settings className='animate-spin-slow cursor-pointer text-gray-500' />
+          </SheetTrigger>
+          <SheetContent className='bg-white'>
+            <SheetHeader className='border-b pb-6 border-dashed'>
+              <SheetTitle>Settings</SheetTitle>
+            </SheetHeader>
+            <div className='flex flex-col space-y-8 items-center my-6'>
+              <div className='flex flex-col space-y-4 w-full'>
+                <Label>Mode</Label>
+                <div className='flex items-center justify-between '>
+                  <div className='group p-8 px-14 border border-dashed rounded cursor-pointer hover:border-primary-600 hover:bg-primary-100 duration-300'>
+                    <Sun className='transition ease-in-out group-hover:-translate-y-1 group-hover:scale-110 duration-300 group-hover:text-primary-600' />
+                  </div>
+                </div>
+              </div>
             </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => toast.error('This function is not availble')}
-            >
-              <div className='gap-x-2 flex items-center'>
-                <Settings size={15} />
-                <span>Setting</span>
+            <SheetFooter>
+              <SheetClose asChild>
+                <Button type='submit'>Save changes</Button>
+              </SheetClose>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
+
+        {user ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <div
+                className='flex h-8 w-8 items-center justify-center rounded-full text-white'
+                style={{
+                  background: generateNameColor(
+                    cn(user.firstName, user.lastName)
+                  ),
+                }}
+              >
+                {cn(user.firstName, user.lastName).charAt(0)}
               </div>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleSignOut}>
-              <div className='gap-x-2 flex items-center'>
-                <LogOutIcon size={15} />
-                <span>Log out</span>
-              </div>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : (
-        <>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant='ghost'>Become EduWise Teacher</Button>
-            </DialogTrigger>
-            <DialogContent className='sm:max-w-[425px]'>
-              <DialogHeader>
-                <DialogTitle>Sign up with Teacher</DialogTitle>
-              </DialogHeader>
-              <RegisterForm loading={loading} formik={formik} />
-            </DialogContent>
-          </Dialog>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => toast.error('This function is not availble')}
+              >
+                <div className='gap-x-2 flex items-center'>
+                  <Settings size={15} />
+                  <span>Setting</span>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSignOut}>
+                <div className='gap-x-2 flex items-center'>
+                  <LogOutIcon size={15} />
+                  <span>Log out</span>
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
           <Button
             variant='light'
             leftIcon={LogInIcon}
@@ -174,8 +190,8 @@ const NavbarRoutes = ({ user }: { user?: UserType }) => {
           >
             Login
           </Button>
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 };

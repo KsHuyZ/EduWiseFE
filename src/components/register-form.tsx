@@ -5,7 +5,7 @@ import React from 'react';
 import Button from '@/components/buttons/Button';
 import Input from '@/components/inputs/Input';
 
-import { UserCredentials } from '@/app/(auth)/sign-up/types/usercredential';
+import { UserCredentials } from '@/app/(auth)/sign-up/types';
 
 const RegisterForm = ({
   formik,

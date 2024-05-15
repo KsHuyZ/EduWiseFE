@@ -1,27 +1,47 @@
-import React from 'react';
+'use client';
+import { ArrowLeft, Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 
-import { Banner } from '@/components/banner';
+import Button from '@/components/buttons/Button';
+
+import { ChaptersForm } from '@/app/(global)/teacher/courses/[courseId]/_components/chapter-form';
+import FormQuestion from '@/app/(global)/teacher/courses/[courseId]/_components/FormQuestion/FormQuestion';
+
+import { Lesson, Video } from '@/types';
 
 const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
   const { courseId } = params;
-  const requiredFields = ['', '', '', 0, ''];
-
-  const totalFields = requiredFields.length;
-  const completedFields = requiredFields.filter(Boolean).length;
-  const completionText = `${completedFields} / ${totalFields}`;
-
+  const router = useRouter();
+  const [changeChapter, setChangeChapter] = useState<{
+    show: boolean;
+    form: Video | undefined;
+    id: string | undefined;
+  }>({ show: false, form: undefined, id: undefined });
+  const [chapters, setChapters] = useState<Lesson[]>([]);
   return (
     <>
-      <Banner label='This course is unpublished. It will not be visible to the students.' />
-      <div className='p-6'>
-        c
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-16'>
-          <div className=''>
-            <div className='mt-6 p-4 w-full'>
-              <form></form>
-            </div>
-          </div>
+      <ArrowLeft className='cursor-pointer' onClick={() => router.back()} />
+      <div className='space-y-2 mx-10'>
+        <div className='w-full'>
+          <ChaptersForm
+            courseId={courseId}
+            setChangeChapter={setChangeChapter}
+            chapters={chapters}
+            setChapters={setChapters}
+          />
         </div>
+        <Button leftIcon={Plus}>Add Chapter</Button>
+        {changeChapter.show ? (
+          <div className='w-full'>
+            {/* <FormVideo
+              chapter={changeChapter}
+              setChangeChapter={setChangeChapter}
+              setChapters={setChapters}
+            /> */}
+            <FormQuestion />
+          </div>
+        ) : null}
       </div>
     </>
   );

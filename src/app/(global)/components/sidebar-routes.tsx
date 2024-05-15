@@ -1,5 +1,14 @@
 'use client';
-import { BarChart, Compass, Layout, List, LucideIcon } from 'lucide-react';
+import {
+  BarChart,
+  Clock,
+  Compass,
+  GraduationCap,
+  Layout,
+  LayoutDashboard,
+  LucideIcon,
+  MessageCircleMore,
+} from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 import SidebarItem from '@/app/(global)/components/sidebar-item';
@@ -17,6 +26,11 @@ const guestRoutes: GuestRoutes[] = [
     href: '/',
   },
   {
+    icon: GraduationCap,
+    label: 'Courses',
+    href: '/courses',
+  },
+  {
     icon: Compass,
     label: 'Browse',
     href: '/search',
@@ -25,9 +39,24 @@ const guestRoutes: GuestRoutes[] = [
 
 const teacherRoutes: GuestRoutes[] = [
   {
-    icon: List,
+    icon: LayoutDashboard,
+    label: 'Dashboard',
+    href: '/teacher',
+  },
+  {
+    icon: GraduationCap,
     label: 'Courses',
     href: '/teacher/courses',
+  },
+  {
+    icon: Clock,
+    label: 'My Schedule',
+    href: '/teacher/schedule',
+  },
+  {
+    icon: MessageCircleMore,
+    label: 'Chat',
+    href: '/teacher/chat',
   },
   {
     icon: BarChart,
