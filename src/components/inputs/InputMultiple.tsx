@@ -2,17 +2,17 @@
 import { XIcon } from 'lucide-react';
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
 
-import { TagType } from '@/types';
+import { ITag } from '@/types';
 
 type InputProps = {
   htmlFor?: string;
   label?: string;
   error?: string;
   setInput: Dispatch<SetStateAction<string>>;
-  items: TagType[];
-  values: TagType[];
+  items: ITag[];
+  values: ITag[];
   value: string;
-  onChange: (value: TagType[]) => void;
+  onChange: (value: ITag[]) => void;
 } & React.ComponentPropsWithRef<'input'>;
 
 const InputMultiple = ({
@@ -24,11 +24,11 @@ const InputMultiple = ({
   onChange,
   ...props
 }: InputProps) => {
-  const [categoriesSelected, setCategoriesSelected] = useState<TagType[]>([]);
+  const [categoriesSelected, setCategoriesSelected] = useState<ITag[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleAddPermission = (newCategory: TagType) => {
+  const handleAddPermission = (newCategory: ITag) => {
     setCategoriesSelected((prev) => [...prev, newCategory]);
     setInput('');
   };
@@ -37,7 +37,7 @@ const InputMultiple = ({
     onChange([]);
   }
 
-  function selectOption(option: TagType) {
+  function selectOption(option: ITag) {
     if (value.includes(option)) {
       onChange(value.filter((o) => o !== option));
     } else {
@@ -45,7 +45,7 @@ const InputMultiple = ({
     }
   }
 
-  const handleDeletePermission = (permissionDel: TagType) => {
+  const handleDeletePermission = (permissionDel: ITag) => {
     const data = categoriesSelected.filter(
       (permisson, index) => permisson.id !== permissionDel.id
     );

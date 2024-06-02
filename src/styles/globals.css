@@ -1,39 +1,202 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
 
-:root {
-  /* #region  /**=========== Primary Color =========== */
-  /* !STARTERCONF Customize these variable, copy and paste from /styles/colors.css for list of colors */
-  --tw-color-primary-50: 236 253 245;
-  --tw-color-primary-100: 209 250 229;
-  --tw-color-primary-200: 167 243 208;
-  --tw-color-primary-300: 110 231 183;
-  --tw-color-primary-400: 52 211 153;
-  --tw-color-primary-500: 16 185 129;
-  --tw-color-primary-600: 5 150 105;
-  --tw-color-primary-700: 4 120 87;
-  --tw-color-primary-800: 6 95 70;
-  --tw-color-primary-900: 6 78 59;
-  --tw-color-primary-950: 2 44 34;
-  --color-primary-50: rgb(var(--tw-color-primary-50)); /* #ecfdf5 */
-  --color-primary-100: rgb(var(--tw-color-primary-100)); /* #d1fae5 */
-  --color-primary-200: rgb(var(--tw-color-primary-200)); /* #a7f3d0 */
-  --color-primary-300: rgb(var(--tw-color-primary-300)); /* #6ee7b7 */
-  --color-primary-400: rgb(var(--tw-color-primary-400)); /* #34d399 */
-  --color-primary-500: rgb(var(--tw-color-primary-500)); /* #10b981 */
-  --color-primary-600: rgb(var(--tw-color-primary-600)); /* #059669 */
-  --color-primary-700: rgb(var(--tw-color-primary-700)); /* #047857 */
-  --color-primary-800: rgb(var(--tw-color-primary-800)); /* #065f46 */
-  --color-primary-900: rgb(var(--tw-color-primary-900)); /* #064e3b */
-  --color-primary-950: rgb(var(--tw-color-primary-950)); /* #022c22 */
-  /* #endregion  /**======== Primary Color =========== */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 215 20.2% 65.1%;
+
+    --radius: 0.5rem;
+
+    --tw-color-primary-50: 236 253 245;
+    --tw-color-primary-100: 209 250 229;
+    --tw-color-primary-200: 167 243 208;
+    --tw-color-primary-300: 110 231 183;
+    --tw-color-primary-400: 52 211 153;
+    --tw-color-primary-500: 16 185 129;
+    --tw-color-primary-600: 5 150 105;
+    --tw-color-primary-700: 4 120 87;
+    --tw-color-primary-800: 6 95 70;
+    --tw-color-primary-900: 6 78 59;
+    --tw-color-primary-950: 2 44 34;
+    --color-primary-50: rgb(var(--tw-color-primary-50)); /* #ecfdf5 */
+    --color-primary-100: rgb(var(--tw-color-primary-100)); /* #d1fae5 */
+    --color-primary-200: rgb(var(--tw-color-primary-200)); /* #a7f3d0 */
+    --color-primary-300: rgb(var(--tw-color-primary-300)); /* #6ee7b7 */
+    --color-primary-400: rgb(var(--tw-color-primary-400)); /* #34d399 */
+    --color-primary-500: rgb(var(--tw-color-primary-500)); /* #10b981 */
+    --color-primary-600: rgb(var(--tw-color-primary-600)); /* #059669 */
+    --color-primary-700: rgb(var(--tw-color-primary-700)); /* #047857 */
+    --color-primary-800: rgb(var(--tw-color-primary-800)); /* #065f46 */
+    --color-primary-900: rgb(var(--tw-color-primary-900)); /* #064e3b */
+    --color-primary-950: rgb(var(--tw-color-primary-950)); /* #022c22 */
+    --fg: #333333;
+    --bg: #ffffff;
+    --text-color-secondary: #33333399;
+  }
+
+  .theme-slate {
+    --tw-color-primary-50: 248 250 252;
+    --tw-color-primary-100: 241 245 249;
+    --tw-color-primary-200: 226 232 240;
+    --tw-color-primary-300: 203 213 225;
+    --tw-color-primary-400: 148 163 184;
+    --tw-color-primary-500: 100 116 139;
+    --tw-color-primary-600: 71 85 105;
+    --tw-color-primary-700: 51 65 85;
+    --tw-color-primary-800: 30 41 59;
+    --tw-color-primary-900: 15 23 42;
+    --tw-color-primary-950: 2 6 23;
+    --color-primary-50: rgb(var(--tw-color-primary-50)); /* #f8fafc */
+    --color-primary-100: rgb(var(--tw-color-primary-100)); /* #f1f5f9 */
+    --color-primary-200: rgb(var(--tw-color-primary-200)); /* #e2e8f0 */
+    --color-primary-300: rgb(var(--tw-color-primary-300)); /* #cbd5e1 */
+    --color-primary-400: rgb(var(--tw-color-primary-400)); /* #94a3b8 */
+    --color-primary-500: rgb(var(--tw-color-primary-500)); /* #64748b */
+    --color-primary-600: rgb(var(--tw-color-primary-600)); /* #475569 */
+    --color-primary-700: rgb(var(--tw-color-primary-700)); /* #334155 */
+    --color-primary-800: rgb(var(--tw-color-primary-800)); /* #1e293b */
+    --color-primary-900: rgb(var(--tw-color-primary-900)); /* #0f172a */
+    --color-primary-950: rgb(var(--tw-color-primary-950)); /* #020617 */
+  }
+
+  .theme-red {
+    --tw-color-primary-50: 254 242 242;
+    --tw-color-primary-100: 254 226 226;
+    --tw-color-primary-200: 254 202 202;
+    --tw-color-primary-300: 252 165 165;
+    --tw-color-primary-400: 248 113 113;
+    --tw-color-primary-500: 239 68 68;
+    --tw-color-primary-600: 220 38 38;
+    --tw-color-primary-700: 185 28 28;
+    --tw-color-primary-800: 153 27 27;
+    --tw-color-primary-900: 127 29 29;
+    --tw-color-primary-950: 69 10 10;
+    --color-primary-50: rgb(var(--tw-color-primary-50)); /* #fef2f2 */
+    --color-primary-100: rgb(var(--tw-color-primary-100)); /* #fee2e2 */
+    --color-primary-200: rgb(var(--tw-color-primary-200)); /* #fecaca */
+    --color-primary-300: rgb(var(--tw-color-primary-300)); /* #fca5a5 */
+    --color-primary-400: rgb(var(--tw-color-primary-400)); /* #f87171 */
+    --color-primary-500: rgb(var(--tw-color-primary-500)); /* #ef4444 */
+    --color-primary-600: rgb(var(--tw-color-primary-600)); /* #dc2626 */
+    --color-primary-700: rgb(var(--tw-color-primary-700)); /* #b91c1c */
+    --color-primary-800: rgb(var(--tw-color-primary-800)); /* #991b1b */
+    --color-primary-900: rgb(var(--tw-color-primary-900)); /* #7f1d1d */
+    --color-primary-950: rgb(var(--tw-color-primary-950)); /* #450a0a */
+  }
+
+  .theme-orange {
+    --tw-color-primary-50: 255 247 237;
+    --tw-color-primary-100: 255 237 213;
+    --tw-color-primary-200: 254 215 170;
+    --tw-color-primary-300: 253 186 116;
+    --tw-color-primary-400: 251 146 60;
+    --tw-color-primary-500: 249 115 22;
+    --tw-color-primary-600: 234 88 12;
+    --tw-color-primary-700: 194 65 12;
+    --tw-color-primary-800: 154 52 18;
+    --tw-color-primary-900: 124 45 18;
+    --tw-color-primary-950: 67 20 7;
+    --color-primary-50: rgb(var(--tw-color-primary-50)); /* #fff7ed */
+    --color-primary-100: rgb(var(--tw-color-primary-100)); /* #ffedd5 */
+    --color-primary-200: rgb(var(--tw-color-primary-200)); /* #fed7aa */
+    --color-primary-300: rgb(var(--tw-color-primary-300)); /* #fdba74 */
+    --color-primary-400: rgb(var(--tw-color-primary-400)); /* #fb923c */
+    --color-primary-500: rgb(var(--tw-color-primary-500)); /* #f97316 */
+    --color-primary-600: rgb(var(--tw-color-primary-600)); /* #ea580c */
+    --color-primary-700: rgb(var(--tw-color-primary-700)); /* #c2410c */
+    --color-primary-800: rgb(var(--tw-color-primary-800)); /* #9a3412 */
+    --color-primary-900: rgb(var(--tw-color-primary-900)); /* #7c2d12 */
+    --color-primary-950: rgb(var(--tw-color-primary-950)); /* #431407 */
+  }
+
+  .theme-amber {
+    --tw-color-primary-50: 255 251 235;
+    --tw-color-primary-100: 254 243 199;
+    --tw-color-primary-200: 253 230 138;
+    --tw-color-primary-300: 252 211 77;
+    --tw-color-primary-400: 251 191 36;
+    --tw-color-primary-500: 245 158 11;
+    --tw-color-primary-600: 217 119 6;
+    --tw-color-primary-700: 180 83 9;
+    --tw-color-primary-800: 146 64 14;
+    --tw-color-primary-900: 120 53 15;
+    --tw-color-primary-950: 69 26 3;
+    --color-primary-50: rgb(var(--tw-color-primary-50)); /* #fffbeb */
+    --color-primary-100: rgb(var(--tw-color-primary-100)); /* #fef3c7 */
+    --color-primary-200: rgb(var(--tw-color-primary-200)); /* #fde68a */
+    --color-primary-300: rgb(var(--tw-color-primary-300)); /* #fcd34d */
+    --color-primary-400: rgb(var(--tw-color-primary-400)); /* #fbbf24 */
+    --color-primary-500: rgb(var(--tw-color-primary-500)); /* #f59e0b */
+    --color-primary-600: rgb(var(--tw-color-primary-600)); /* #d97706 */
+    --color-primary-700: rgb(var(--tw-color-primary-700)); /* #b45309 */
+    --color-primary-800: rgb(var(--tw-color-primary-800)); /* #92400e */
+    --color-primary-900: rgb(var(--tw-color-primary-900)); /* #78350f */
+    --color-primary-950: rgb(var(--tw-color-primary-950)); /* #451a03 */
+  }
+
+  .dark {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
+
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 1.2%;
+
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 216 34% 17%;
+
+    --radius: 0.5rem;
+  }
 }
-
 @layer base {
   /* inter var - latin */
   @font-face {
-    font-family: 'Inter';
     font-style: normal;
     font-weight: 100 900;
     font-display: optional;
@@ -43,38 +206,42 @@
       U+2215, U+FEFF, U+FFFD;
   }
 
+  body {
+    font-family: 'Nunito', sans-serif;
+  }
+
   .cursor-newtab {
     cursor: url('/images/new-tab.png') 10 10, pointer;
   }
 
   /* #region  /**=========== Typography =========== */
   .h0 {
-    @apply font-primary text-3xl font-bold md:text-5xl;
+    @apply text-3xl font-bold md:text-5xl;
   }
 
   h1,
   .h1 {
-    @apply font-primary text-2xl font-bold md:text-4xl;
+    @apply text-2xl font-bold md:text-4xl;
   }
 
   h2,
   .h2 {
-    @apply font-primary text-xl font-bold md:text-3xl;
+    @apply text-xl font-bold md:text-3xl;
   }
 
   h3,
   .h3 {
-    @apply font-primary text-lg font-bold md:text-2xl;
+    @apply text-lg font-bold md:text-2xl;
   }
 
   h4,
   .h4 {
-    @apply font-primary text-base font-bold md:text-lg;
+    @apply text-base font-bold md:text-lg;
   }
 
   body,
   .p {
-    @apply font-primary text-sm md:text-base;
+    @apply text-sm md:text-base;
   }
   /* #endregion  /**======== Typography =========== */
 

@@ -1,6 +1,6 @@
-import { TagType } from '@/types';
+import { ITag } from '@/types';
 
-export const __mockTags: TagType[] = [
+export const __mockTags: ITag[] = [
   {
     id: 1,
     title: 'HTML5',

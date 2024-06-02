@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import Button from '@/components/buttons/Button';
 import Input from '@/components/inputs/Input';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
@@ -72,7 +72,6 @@ const FormQuiz = () => {
   });
   const onSubmit = async () => {
     const isValid = await trigger();
-    console.log(getValues(), isValid);
   };
   return (
     <>

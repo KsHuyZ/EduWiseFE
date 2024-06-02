@@ -3,21 +3,22 @@ import { useFormik } from 'formik';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
-import toast from 'react-hot-toast';
 import * as Yup from 'yup';
 
 import { setCookies } from '@/lib/action';
 
-import Button from '@/components/buttons/Button';
 import Input from '@/components/inputs/Input';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
 
-import { signIn } from '@/app/(auth)/sign-in/api';
-import { UserCredentials } from '@/app/(auth)/sign-in/types';
+import { signIn } from '@/api';
 import { validateError } from '@/utils';
+
+import { TSignInCredentials } from '@/types';
 
 const { object, string, boolean } = Yup;
 
-const initialValues: UserCredentials = {
+const initialValues: TSignInCredentials = {
   email: '',
   password: '',
   rememberMe: false,
@@ -32,20 +33,25 @@ const validationSchema = object({
 const SignInForm = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const onSubmit = async (values: UserCredentials) => {
+  const { toast } = useToast();
+  const onSubmit = async (values: TSignInCredentials) => {
     try {
       setLoading(true);
       const result = await signIn(values);
       const { token, refreshToken, userResponse } = result;
       await setCookies('user', userResponse);
       await setCookies('token', { token, refreshToken });
-      toast.success('Login Success');
+      toast({
+        title: 'Sign In Success',
+        description: 'You are sign iin success!',
+        variant: 'success',
+      });
       router.replace('/');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      toast.error(validateError(error));
+      toast({ title: validateError(error), variant: 'destructive' });
       if (error && error.data) {
-        const items = error.data.items as UserCredentials;
+        const items = error.data.items as TSignInCredentials;
         if (items?.email) {
           formik.setFieldError('email', items?.email);
         }
@@ -116,12 +122,7 @@ const SignInForm = () => {
           Forgot password?
         </a>
       </div>
-      <Button
-        type='submit'
-        variant='primary'
-        className='block w-full text-center'
-        isLoading={loading}
-      >
+      <Button type='submit' className='w-full text-center' isLoading={loading}>
         Sign in
       </Button>
       <p className='text-sm font-light text-gray-500 dark:text-gray-400'>
