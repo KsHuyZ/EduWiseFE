@@ -1,25 +1,27 @@
 import { Slot } from '@radix-ui/react-slot';
 import { type VariantProps, cva } from 'class-variance-authority';
+import { Loader2, LucideIcon } from 'lucide-react';
 import * as React from 'react';
+import { IconType } from 'react-icons';
 
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300',
+  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
         default:
-          'bg-slate-900 text-slate-50 hover:bg-slate-900/90 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-50/90',
+          'bg-primary-600 text-primary-foreground hover:bg-primary/90 text-white',
         destructive:
-          'bg-red-500 text-slate-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-slate-50 dark:hover:bg-red-900/90',
+          'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline:
-          'border border-slate-200 bg-white hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50',
+          'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
         secondary:
-          'bg-slate-100 text-slate-900 hover:bg-slate-100/80 dark:bg-slate-800 dark:text-slate-50 dark:hover:bg-slate-800/80',
-        ghost:
-          'hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50',
-        link: 'text-slate-900 underline-offset-4 hover:underline dark:text-slate-50',
+          'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        ghost: 'hover:bg-accent hover:text-accent-foreground',
+        link: 'text-primary underline-offset-4 hover:underline',
+        error: 'text-destructive-foreground bg-red-500 hover:bg-red-800',
       },
       size: {
         default: 'h-10 px-4 py-2',
@@ -39,17 +41,64 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  isLoading?: boolean;
+  leftIcon?: IconType | LucideIcon;
+  rightIcon?: IconType | LucideIcon;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      isLoading,
+      leftIcon: LeftIcon,
+      rightIcon: RightIcon,
+      size,
+      children,
+      asChild = false,
+      ...props
+    },
+    ref
+  ) => {
     const Comp = asChild ? Slot : 'button';
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(
+          buttonVariants({ variant, size, className }),
+          'items-center'
+        )}
+        disabled={isLoading}
         ref={ref}
         {...props}
-      />
+      >
+        {isLoading === true ? (
+          <Loader2
+            className={cn(
+              'h-4 w-4 animate-spin',
+              children !== undefined && 'mr-2'
+            )}
+          />
+        ) : (
+          LeftIcon && (
+            <div className={cn([size === 'sm' && 'mr-1.5'], [!size && 'mr-2'])}>
+              <LeftIcon
+                size='1em'
+                className={cn([size === 'sm' && 'md:text-md text-sm'])}
+              />
+            </div>
+          )
+        )}
+        {children}
+        {RightIcon && (
+          <div className={cn([size === 'sm' && 'mr-1.5'], [!size && 'mr-2'])}>
+            <RightIcon
+              size='1em'
+              className={cn([size === 'sm' && 'md:text-md text-sm'])}
+            />
+          </div>
+        )}
+      </Comp>
     );
   }
 );

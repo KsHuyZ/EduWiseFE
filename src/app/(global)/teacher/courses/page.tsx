@@ -1,14 +1,15 @@
 'use client';
 import { Plus, Search } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
-import Button from '@/components/buttons/Button';
 import CourseCard from '@/components/course-card';
 import Input from '@/components/inputs/Input';
 import Paginations from '@/components/pagination';
+import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -38,6 +39,7 @@ const Courses = () => {
     },
     [searchParams]
   );
+
   const { data, isLoading, isError, error } = useTeacherCourse();
   useEffect(() => {
     if (isError) {
@@ -87,8 +89,21 @@ const Courses = () => {
             <div>
               <p>You haven't any course</p>
             </div>
+          ) : data?.items?.length === 0 ? (
+            <div className='flex flex-col space-y-4'>
+              <Image
+                src='/images/empty.svg'
+                fill={true}
+                className='w-40 h-40 object-cover rounded-md'
+                alt='Course image'
+              />
+              <Label>You don't have any course</Label>
+              <Link href='/teacher/courses/create/info'>
+                <Button>Create now</Button>
+              </Link>
+            </div>
           ) : (
-            data?.items.map((course) => (
+            data?.items?.map((course) => (
               <CourseCard key={course.id} course={course} />
             ))
           )}

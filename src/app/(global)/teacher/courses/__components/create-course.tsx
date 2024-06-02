@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/sheet';
 
 import { ChaptersForm } from '@/app/(global)/teacher/courses/__components/chapter-form';
-import CreateForm from '@/app/(global)/teacher/courses/create/_components/create-form';
+import CreateForm from '@/app/(global)/teacher/courses/(modification-course)/create/_components/create-form';
 
 import { Lesson, Video } from '@/types';
 

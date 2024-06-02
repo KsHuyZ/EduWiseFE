@@ -10,10 +10,9 @@ import { useEffect, useState } from 'react';
 
 import { cn } from '@/lib/utils';
 
-import Button from '@/components/buttons/Button';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
-// import { Badge } from '@/components/ui/badge';
 import FormQuiz from '@/app/(global)/teacher/courses/__components/form-quiz';
 import FormVideo from '@/app/(global)/teacher/courses/__components/form-video';
 
@@ -36,7 +35,6 @@ export const ChaptersList = ({
 }: ChaptersListProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [chapter, setChapter] = useState(items);
-  const [isUpdate, setIsUpdate] = useState(false);
   const [currentLesson, setCurrentLesson] = useState<undefined | string>(
     undefined
   );
@@ -103,7 +101,6 @@ export const ChaptersList = ({
                     </div>
                     <Skeleton className='w-20 h-5' />
                     <div className='ml-auto pr-2 flex items-center gap-x-2'>
-                      {/* {chapter.isFree && <Badge>Free</Badge>} */}
                       <Pencil className='w-4 h-4 cursor-pointer hover:opacity-75 transition' />
                       <Trash className='w-4 h-4 cursor-pointer hover:opacity-75 transition' />
                       <ChevronDown

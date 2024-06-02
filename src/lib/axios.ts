@@ -7,7 +7,7 @@ import Axios from 'axios';
 
 import { getCookies, setCookies } from '@/lib/action';
 
-import refreshTokenApi from '@/api/refreshToken';
+import { refreshToken as refreshTokenApi } from '@/api';
 
 import { Token } from '@/types';
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -48,9 +48,10 @@ axios.interceptors.response.use(
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
+
       const token = (await getCookies('token')) as Token;
       const refreshToken = token.refreshToken;
-      if (!refreshToken) {
+      if (refreshToken) {
         const result = await refreshTokenApi(refreshToken);
         const { token, refreshToken: newRefreshToken } = result;
         setCookies('token', { token, refreshToken: newRefreshToken });

@@ -4,8 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-import { cn } from '@/lib/utils';
-
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -22,8 +20,8 @@ const CourseCard = ({
   loading?: boolean;
 }) => {
   return (
-    <Link href={cn('/teacher/courses/', course?.id)}>
-      <Card className='rounded-md overflow-hidden hover:bg-primary-50 hover:shadow-md group duration-500'>
+    <Link href={`/courses/${course?.id}`}>
+      <Card className='rounded-md overflow-hidden hover:bg-primary-50 hover:shadow-md group duration-500 h-full'>
         <div className='relative w-full aspect-video '>
           {loading ? (
             <Skeleton className='w-full h-40' />
@@ -36,7 +34,7 @@ const CourseCard = ({
             />
           )}
         </div>
-        <CardContent>
+        <CardContent className='flex-1'>
           <div className='space-y-5'>
             <div className='space-y-3'>
               {loading ? (
@@ -67,9 +65,13 @@ const CourseCard = ({
                 ))}
               </div>
             </div>
-            <p className='text-md md:text-sm font-medium text-slate-700'>
-              {course?.price === 0 ? 'Free' : formatPrice(course?.price ?? 0)}
-            </p>
+            {loading ? (
+              <Skeleton className='w-24 h-4' />
+            ) : (
+              <p className='text-md md:text-sm font-medium text-slate-700'>
+                {course?.price === 0 ? 'Free' : formatPrice(course?.price)}
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>

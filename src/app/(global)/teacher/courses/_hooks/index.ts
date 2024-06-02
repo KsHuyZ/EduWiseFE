@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getCourses } from '@/api';
+import { getTeacherCourses } from '@/api';
 
 export const useTeacherCourse = () =>
   useQuery({
     queryKey: ['teacher-course'],
-    queryFn: getCourses,
+    queryFn: () => getTeacherCourses(),
   });

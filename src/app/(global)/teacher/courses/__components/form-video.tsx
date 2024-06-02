@@ -6,9 +6,9 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
 
-import Button from '@/components/buttons/Button';
 import Input from '@/components/inputs/Input';
 import Tiptap from '@/components/inputs/Tiptap';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,

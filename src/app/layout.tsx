@@ -1,8 +1,7 @@
 import { Metadata } from 'next';
 import NextTopLoader from 'nextjs-toploader';
 import * as React from 'react';
-import { Toaster } from 'react-hot-toast';
-
+import { Toaster } from '@/components/ui/toaster';
 import '@/styles/globals.css';
 // !STARTERCONF This is for demo purposes, remove @/styles/colors.css import immediately
 import '@/styles/colors.css';
@@ -59,7 +58,7 @@ export default function RootLayout({
 }) {
   return (
     <html>
-      <body>
+      <body lang='en' suppressHydrationWarning>
         <NextTopLoader color='var(--color-primary-700)' />
         <Toaster />
         <Providers>{children}</Providers>

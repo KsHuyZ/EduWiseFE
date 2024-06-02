@@ -3,7 +3,7 @@ import { ArrowLeft, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
-import Button from '@/components/buttons/Button';
+import { Button } from '@/components/ui/button';
 
 import { ChaptersForm } from '@/app/(global)/teacher/courses/[courseId]/_components/chapter-form';
 import FormQuestion from '@/app/(global)/teacher/courses/[courseId]/_components/FormQuestion/FormQuestion';
@@ -34,11 +34,6 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
         <Button leftIcon={Plus}>Add Chapter</Button>
         {changeChapter.show ? (
           <div className='w-full'>
-            {/* <FormVideo
-              chapter={changeChapter}
-              setChangeChapter={setChangeChapter}
-              setChapters={setChapters}
-            /> */}
             <FormQuestion />
           </div>
         ) : null}

@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { Plus } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -11,8 +11,8 @@ import * as z from 'zod';
 
 import { cn } from '@/lib/utils';
 
-import Button from '@/components/buttons/Button';
 import Input from '@/components/inputs/Input';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -32,7 +32,7 @@ import { ChaptersList } from '@/app/(global)/teacher/courses/__components/chapte
 import {
   useLessons,
   useModificationLesson,
-} from '@/app/(global)/teacher/courses/create/_hook';
+} from '@/app/(global)/teacher/courses/(modification-course)/create/_hook';
 import { validateError } from '@/utils';
 
 import { Lesson, Video } from '@/types';
@@ -57,7 +57,7 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [open, setOpen] = useState(false);
   const [currentLesson, setCurrentLesson] = useState<Lesson | undefined>();
-  const { data: lessons, isLoading } = useLessons(idCourse);
+  const { data: lessons, isLoading, isError, error } = useLessons(idCourse);
   const { isPending, mutateAsync: modificationLesson } = useModificationLesson(
     idCourse!,
     currentLesson?.id
@@ -70,6 +70,10 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
     },
   });
 
+  useEffect(() => {
+    toast.error(validateError(error));
+  }, [isError]);
+
   const onAddVideo = (id: string, video: Video) => {
     console.log(id, video);
   };
@@ -81,24 +85,19 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      if (idCourse) {
-        const lessonValues = currentLesson
-          ? { ...values, id: currentLesson.id }
-          : { ...values, idCourse };
-        await modificationLesson(lessonValues);
-        toast.success(`Chapter ${currentLesson ? 'updated' : 'created'}!`);
-        setOpen(false);
-        setCurrentLesson(undefined);
-      }
-    } catch (error) {
-      toast.error(validateError(error));
+    if (idCourse) {
+      const lessonValues = currentLesson
+        ? { ...values, id: currentLesson.id }
+        : { ...values, idCourse };
+      await modificationLesson(lessonValues);
+      toast.success(`Chapter ${currentLesson ? 'updated' : 'created'}!`);
+      setOpen(false);
+      setCurrentLesson(undefined);
     }
   };
 
   const onReorder = async (updateData: { id: string; position: number }[]) => {
     try {
-      setIsUpdating(true);
       await new Promise((resolve) => {
         setTimeout(() => {
           resolve(true);
@@ -108,8 +107,6 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
       // router.refresh();
     } catch {
       toast.error('Something went wrong');
-    } finally {
-      setIsUpdating(false);
     }
   };
 

@@ -1,3 +1,3 @@
-import { TagType } from '@/types/tag';
+import { ITag } from '@/types/tag';
 
-export type CategoryType = TagType;
+export type ICategory = ITag;

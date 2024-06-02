@@ -1,5 +1,5 @@
 import { Token } from '@/types/token';
-import { UserType } from '@/types/user';
+import { TUser } from '@/types/user';
 
 export type RefreshTokenResponse = {
   token: string;
@@ -11,7 +11,7 @@ export type SignInResponse = {
     token: number;
     refreshToken: number;
   };
-  userResponse: UserType;
+  userResponse: TUser;
 } & Token;
 
 export type TableApiResponse<T> = {

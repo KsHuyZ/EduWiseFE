@@ -1,4 +1,4 @@
-import { CategoryType, ImageType, TagType } from '@/types';
+import { ICategory, ImageType, ITag } from '@/types';
 
 export type CourseCredentials = {
   name: string;
@@ -6,8 +6,8 @@ export type CourseCredentials = {
   level: string;
   discount: number;
   price: number | string;
-  tags: TagType[];
-  categories: CategoryType[];
+  tags: ITag[];
+  categories: ICategory[];
   file?: FileList | null;
   status?: string;
 };
@@ -18,8 +18,8 @@ export type CourseType = {
   price: number;
   description: string;
   file: ImageType;
-  categories: CategoryType[];
-  tags: TagType[];
+  categories: ICategory[];
+  tags: ITag[];
   chapters?: Lesson[];
 };
 

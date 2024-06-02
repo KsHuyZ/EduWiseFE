@@ -1,20 +1,15 @@
 import axios from '@/lib/axios';
 
+import { __courseMock } from '@/__mocks__';
+
 import {
-  CategoryType,
   CourseCredentials,
   CourseType,
+  ICategory,
   Lesson,
   LessonCredentials,
-  TagType,
 } from '@/types';
 import { TableApiResponse } from '@/types/response';
-
-export const getTags = (title: string): Promise<TagType[]> =>
-  axios.get(`/course/tags/${title}`);
-
-export const getCategories = (title: string): Promise<CategoryType[]> =>
-  axios.get(`/course/categories/${title}`);
 
 type CourseCredentialOverride = Omit<
   CourseCredentials,
@@ -36,11 +31,28 @@ export const createCourses = (
     data.append(key, formatCourse[key]);
   });
 
-  return axios.post('/course/create', data);
+  return axios.post('/course/create', data, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
 };
 
-export const getCourses = (): Promise<TableApiResponse<CourseType[]>> =>
-  axios.get('/course/get-all');
+export const getCourses = (
+  sort: string | null,
+  priceMin: string | null,
+  priceMax: string | null,
+  keyword: string | null
+): Promise<TableApiResponse<CourseType[]>> =>
+  axios.get('/course/get-all', {
+    params: {
+      sort,
+      priceMin,
+      priceMax,
+      keyword,
+    },
+  });
+
+export const getTeacherCourses = (): Promise<TableApiResponse<CourseType[]>> =>
+  axios.get(`/course/get-by-teacher`);
 
 export const getCoursesLesson = (id: string): Promise<Lesson[]> =>
   axios.get(`/lesson/get-lessons?id=${id}`);
@@ -49,4 +61,17 @@ export const createLesson = (lesson: LessonCredentials): Promise<Lesson> =>
   axios.post('/lesson/create', lesson);
 
 export const updateLesson = (lesson: LessonCredentials): Promise<Lesson> =>
-  axios.post('/lesson/update', lesson);
+  axios.put(`/lesson/update/${lesson.id}`, {
+    title: lesson.title,
+    content: lesson.content,
+  });
+
+export const getAllCourseCategories = (): Promise<ICategory[]> =>
+  axios.get('/course/categories/get-all');
+
+export const getLessonByCourseId = (id: string): Promise<Lesson[]> =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(__courseMock);
+    }, 500);
+  });
