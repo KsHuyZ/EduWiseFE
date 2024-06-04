@@ -1,19 +1,21 @@
 'use client';
 import { XIcon } from 'lucide-react';
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 
 import { cn } from '@/lib/utils';
+import { ImageType } from '@/types';
 
 type InputProps = {
   htmlFor?: string;
   label?: string;
   error?: string;
+  value: any;
   onClear?: () => void;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 } & React.ComponentPropsWithRef<'input'>;
 
 const ImageUploader = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, htmlFor, name, onClear, onChange }) => {
+  ({ label, error, htmlFor, name, onClear, onChange, value }) => {
     const [filePreview, setFilePreview] = useState<
       string | ArrayBuffer | null | undefined
     >(null);

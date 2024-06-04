@@ -138,7 +138,6 @@ export const ChaptersList = ({
                           </div>
                           {chapter.title}
                           <div className='ml-auto pr-2 flex items-center gap-x-2'>
-                            {/* {chapter.isFree && <Badge>Free</Badge>} */}
                             <Pencil
                               onClick={() => onSelectLesson(chapter)}
                               className='w-4 h-4 cursor-pointer hover:opacity-75 transition'
@@ -161,10 +160,49 @@ export const ChaptersList = ({
                           </div>
                         </div>
                         <div className='flex flex-col align-middle justify-center mx-auto'>
-                          {currentLesson === chapter.id ? (
-                            <div className='flex flex-col space-y-8'>
-                              <div>
-                                {/* {chapter.videos.map((video, index) => (
+                          <div
+                            className={cn(
+                              'no-scrollbar duration-700',
+                              currentLesson === chapter.id
+                                ? 'overflow-y-scroll max-h-[500px]'
+                                : 'max-h-0 overflow-hidden'
+                            )}
+                          >
+                            {currentLesson === chapter.id ? (
+                              <div className='flex flex-col space-y-8'>
+                                <div>
+                                  {chapter.units.map((units) => (
+                                    <div
+                                      key={units.id}
+                                      className={cn(
+                                        'flex items-center space-x-2 '
+                                      )}
+                                    >
+                                      <div
+                                        key={`video_${units.id}`}
+                                        className='cursor-pointer w-full hover:bg-gray-200 m-2 p-2 rounded-sm transition'
+                                      >
+                                        <div className='flex items-center mx-3 justify-between'>
+                                          <div className='flex flex-col'>
+                                            <span className='text-primary-600'>
+                                              {index + 1}. : {units.title}
+                                            </span>
+                                            <div className='flex items-center text-xs'>
+                                              {/* {video.type === 'video' ? (
+                                              <PlayCircle size={15} />
+                                            ) : (
+                                              <StickyNote size={15} />
+                                            )}{' '} */}
+                                              <span className='ml-2'>
+                                                20:00
+                                              </span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                  {/* {chapter.videos.map((video, index) => (
                               <div
                                 key={`video_${video.id}`}
                                 className='cursor-pointer hover:bg-gray-200 m-2 p-2 rounded-sm transition bg-gray-50'
@@ -194,23 +232,27 @@ export const ChaptersList = ({
                                 </div>
                               </div>
                             ))} */}
-                              </div>
-                              <div className='flex justify-between items-center'>
-                                <div className='grid grid-cols-2 gap-2'>
-                                  <FormVideo
-                                    lessonId={currentLesson}
-                                    onAddVideo={onAddVideo}
-                                  />
-                                  <FormQuiz />
                                 </div>
-                                <div>
-                                  <Button variant='outline' leftIcon={Download}>
-                                    Import
-                                  </Button>
+                                <div className='flex justify-between items-center'>
+                                  <div className='grid grid-cols-2 gap-2'>
+                                    <FormVideo
+                                      lessonId={currentLesson}
+                                      onAddVideo={onAddVideo}
+                                    />
+                                    <FormQuiz />
+                                  </div>
+                                  <div>
+                                    <Button
+                                      variant='outline'
+                                      leftIcon={Download}
+                                    >
+                                      Import
+                                    </Button>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          ) : null}
+                            ) : null}
+                          </div>
                         </div>
                       </div>
                     )}

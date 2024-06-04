@@ -1,6 +1,7 @@
 export * from './category';
 export * from './course';
 export * from './image';
+export * from './payment';
 export * from './question';
 export * from './response';
 export * from './review';

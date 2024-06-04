@@ -1,6 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -32,7 +33,7 @@ const RegisterForm = ({ type, goBack }: IRegisterForm) => {
     resolver: zodResolver(signUpSchema),
   });
   const { toast } = useToast();
-
+  const router = useRouter();
   const { mutateAsync: signUp, isPending } = useSignUp(type);
 
   const onSubmit = async (values: TSignUpCredentials) => {
@@ -42,6 +43,7 @@ const RegisterForm = ({ type, goBack }: IRegisterForm) => {
       description: 'You are sign up success!',
       variant: 'success',
     });
+    router.replace('/sign-in');
   };
   return (
     <Form {...form}>

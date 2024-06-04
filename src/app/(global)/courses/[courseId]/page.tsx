@@ -21,9 +21,10 @@ import { Ratings } from '@/components/ui/rating';
 import { Separator } from '@/components/ui/separator';
 
 import { __mockReviews } from '@/__mocks__';
+import { getCourseById } from '@/api';
 import CourseList from '@/app/(global)/courses/[courseId]/_components/course-list';
-// import { getCourseById } from '@/api';
 import ModalPreview from '@/app/(global)/courses/[courseId]/_components/modal-preview';
+import PayMent from '@/app/(global)/courses/[courseId]/_components/payment';
 import { generateNameColor } from '@/utils';
 
 interface CourseIdProps {
@@ -33,7 +34,7 @@ interface CourseIdProps {
 }
 
 const CourseIdPage = async ({ params: { courseId } }: CourseIdProps) => {
-  // const course = getCourseById(courseId);
+  const course = await getCourseById(courseId);
 
   return (
     <div className='w-full h-full'>
@@ -42,9 +43,7 @@ const CourseIdPage = async ({ params: { courseId } }: CourseIdProps) => {
           <div className='grid grid-cols-3 gap-2 items-center'>
             <div className='col-span-2'>
               <div className='flex flex-col space-y-4'>
-                <h3 className='text-white'>
-                  The Complete 2024 Web Development Bootcamp
-                </h3>
+                <h3 className='text-white'>{course.name}</h3>
                 <div className='flex items-center space-x-4'>
                   <Ratings rating={4.5} totalStars={5} variant='yellow' />
                   <span className='underline text-white'>(400 ratings)</span>
@@ -59,19 +58,19 @@ const CourseIdPage = async ({ params: { courseId } }: CourseIdProps) => {
                   </p>
                 </div>
                 <div className='flex items-center space-x-2'>
-                  <Badge className='text-white' variant='outline'>
-                    Figma
-                  </Badge>
-                  <Badge className='text-white' variant='outline'>
-                    UI/UX Design
-                  </Badge>
-                  <Badge className='text-white' variant='outline'>
-                    Web Design
-                  </Badge>
+                  {course.tags.map((tag) => (
+                    <Badge
+                      key={tag.id}
+                      className='text-white'
+                      variant='outline'
+                    >
+                      {tag.name}
+                    </Badge>
+                  ))}
                 </div>
               </div>
             </div>
-            <ModalPreview />
+            <ModalPreview img={course.file} name={course.name} />
           </div>
         </div>
         <div className='grid grid-cols-3 gap-2 items-start'>
@@ -82,41 +81,9 @@ const CourseIdPage = async ({ params: { courseId } }: CourseIdProps) => {
             </div>
             <div className='flex flex-col space-y-4'>
               <h3>Description</h3>
-              <span>
-                Become a Python Programmer and learn one of employer's most
-                requested skills of 2023! This is the most comprehensive, yet
-                straight-forward, course for the Python programming language on
-                Udemy! Whether you have never programmed before, already know
-                basic syntax, or want to learn about the advanced features of
-                Python, this course is for you! In this course we will teach you
-                Python 3. With over 100 lectures and more than 21 hours of video
-                this comprehensive course leaves no stone unturned! This course
-                includes quizzes, tests, coding exercises and homework
-                assignments as well as 3 major projects to create a Python
-                project portfolio! Learn how to use Python for real-world tasks,
-                such as working with PDF Files, sending emails, reading Excel
-                files, Scraping websites for informations, working with image
-                files, and much more! This course will teach you Python in a
-                practical manner, with every lecture comes a full coding
-                screencast and a corresponding code notebook! Learn in whatever
-                manner is best for you! We will start by helping you get Python
-                installed on your computer, regardless of your operating system,
-                whether its Linux, MacOS, or Windows, we've got you covered. We
-                cover a wide variety of topics, including: Command Line Basics
-                Installing Python Running Python Code Strings Lists Dictionaries
-                Tuples Sets Number Data Types Print Formatting Functions Scope
-                args/kwargs Built-in Functions Debugging and Error Handling
-                Modules External Modules Object Oriented Programming Inheritance
-                Polymorphism File I/O Advanced Methods Unit Tests and much more!
-                You will get lifetime access to over 100 lectures plus
-                corresponding Notebooks for the lectures! This course comes with
-                a 30 day money back guarantee! If you are not satisfied in any
-                way, you'll get your money back. Plus you will keep access to
-                the Notebooks as a thank you for trying out the course! So what
-                are you waiting for? Learn Python in a way that will advance
-                your career and increase your knowledge, all in a fun and
-                practical way!
-              </span>
+              <span
+                dangerouslySetInnerHTML={{ __html: course.description }}
+              ></span>
             </div>
             <div className='flex flex-col space-y-4'>
               <h3>Reviews</h3>
@@ -180,14 +147,16 @@ const CourseIdPage = async ({ params: { courseId } }: CourseIdProps) => {
 
           <Card className='sticky top-0'>
             <CardHeader>
-              <CardTitle>20$</CardTitle>
+              <CardTitle>
+                {course.price === 0 ? 'Free' : `${course.price}$`}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className='flex flex-col space-y-12'>
                 <div className='flex flex-col space-y-8'>
                   <div className='flex flex-col space-y-4'>
                     <Button>Add to cart</Button>
-                    <Button variant='outline'>Buy now</Button>
+                    <PayMent amount={course.price} />
                   </div>
                   <div className='flex flex-col space-y-4'>
                     <Label>This course includes:</Label>

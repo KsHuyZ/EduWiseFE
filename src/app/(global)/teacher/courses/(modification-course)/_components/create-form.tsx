@@ -3,10 +3,9 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DollarSign } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { useRouter } from 'next/navigation';
-import React, { ChangeEvent, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
 import { z } from 'zod';
 
 import { useDebounce } from '@/hooks';
@@ -34,14 +33,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useToast } from '@/components/ui/use-toast';
 
 import {
   useCategory,
   useCreateCourse,
   useTag,
 } from '@/app/(global)/teacher/courses/(modification-course)/create/_hook';
+import { useCourseInfo } from '@/app/(global)/teacher/courses/(modification-course)/edit/info/[id]/hooks';
 import { courseInitialValues, levelOptions } from '@/constant';
 import { validateError } from '@/utils';
+import { courseInfoSchema } from '@/validator';
 
 const CustomEditor = dynamic(
   () => {
@@ -50,44 +52,8 @@ const CustomEditor = dynamic(
   { ssr: false }
 );
 
-const MAX_FILE_SIZE = 2000000000;
-const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/webp',
-];
-const tagSchema = z.object({
-  id: z.string(),
-  name: z.string().min(0, 'Tag name is require!'),
-});
-const categorySchema = z.object({
-  id: z.string(),
-  name: z.string().min(0, 'Category name is require!'),
-});
-
-const formSchema = z.object({
-  name: z.string({ required_error: 'Course name is require!' }).trim(),
-  price: z.number().default(0),
-  description: z.string().min(0, 'About course is require').trim(),
-  file: z
-    .any()
-    .refine((files) => {
-      return files?.size <= MAX_FILE_SIZE;
-    }, `Max image size is 5MB.`)
-    .refine(
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.type),
-      'Only .jpg, .jpeg, .png and .webp formats are supported.'
-    ),
-  tags: z.array(tagSchema).min(0, 'Tag at lease one item!'),
-  categories: z.array(categorySchema).min(0, 'Category at lease one item!'),
-  level: z.string().min(0, 'Level is require!'),
-  discount: z.number({
-    required_error: 'Discount is require!',
-  }),
-});
-
 const CreateForm = () => {
+  const { id } = useParams();
   const [inputTagValue, setInputTagValue] = useState('');
   const [inputCategoryValue, setInputCategoryValue] = useState('');
   const [isPay, setIsPay] = useState(false);
@@ -97,20 +63,22 @@ const CreateForm = () => {
   const { data: categories, isLoading: categoryLoading } = useCategory(
     debouncedCategoryInput
   );
+  const { toast } = useToast();
   const { isPending, mutateAsync: createCourse } = useCreateCourse();
   const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof courseInfoSchema>>({
+    resolver: zodResolver(courseInfoSchema),
     defaultValues: courseInitialValues,
   });
+  const { data } = useCourseInfo(id as string);
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof courseInfoSchema>) => {
     try {
       const result = await createCourse(values);
       router.push(`/teacher/courses/edit/lesson/${result.id}`);
-      toast.success('Create course success!');
+      toast({ title: 'Create course success!', variant: 'success' });
     } catch (error) {
-      toast.error(validateError(error));
+      toast({ title: validateError(error), variant: 'destructive' });
     }
   };
 
@@ -127,6 +95,23 @@ const CreateForm = () => {
   const onClearImage = () => {
     form.setValue('file', null);
   };
+
+  useEffect(() => {
+    if (id && data) {
+      const { file, name, price, description, tags, categories } = data;
+      form.reset({
+        name,
+        price,
+        description,
+        tags,
+        categories,
+      });
+      form.setValue('file', file.url);
+      if (price > 0) {
+        setIsPay(true);
+      }
+    }
+  }, [id, data]);
 
   return (
     <div className=''>
@@ -343,7 +328,7 @@ const CreateForm = () => {
           <FormField
             control={form.control}
             name='file'
-            render={() => (
+            render={({ field }) => (
               <FormItem className='w-full'>
                 <FormLabel>
                   Image <span className='text-red-600'>*</span>
@@ -353,6 +338,7 @@ const CreateForm = () => {
                     name='file'
                     onChange={handleImageChange}
                     onClear={onClearImage}
+                    value={field.value}
                   />
                 </FormControl>
                 <FormMessage />

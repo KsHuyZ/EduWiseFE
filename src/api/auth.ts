@@ -5,7 +5,11 @@ import { RefreshTokenResponse, TSignUpCredentials } from '@/types';
 export const refreshToken = (
   refreshToken: string
 ): Promise<RefreshTokenResponse> =>
-  axios.post('/auth/refresh', `Bearer ${refreshToken}`);
+  axios.post('/auth/refresh', `Bearer ${refreshToken}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
 export const signOut = () => axios.get('/auth/logout');
 
