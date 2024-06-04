@@ -6,7 +6,6 @@ import { Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
 import * as z from 'zod';
 
 import { cn } from '@/lib/utils';
@@ -27,13 +26,13 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { useToast } from '@/components/ui/use-toast';
 
 import { ChaptersList } from '@/app/(global)/teacher/courses/__components/chapter-list';
 import {
   useLessons,
   useModificationLesson,
 } from '@/app/(global)/teacher/courses/(modification-course)/create/_hook';
-import { validateError } from '@/utils';
 
 import { Lesson, Video } from '@/types';
 
@@ -57,11 +56,12 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [open, setOpen] = useState(false);
   const [currentLesson, setCurrentLesson] = useState<Lesson | undefined>();
-  const { data: lessons, isLoading, isError, error } = useLessons(idCourse);
+  const { data: lessons, isLoading, refetch } = useLessons(idCourse);
   const { isPending, mutateAsync: modificationLesson } = useModificationLesson(
     idCourse!,
     currentLesson?.id
   );
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -71,8 +71,8 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
   });
 
   useEffect(() => {
-    toast.error(validateError(error));
-  }, [isError]);
+    form.reset();
+  }, [open]);
 
   const onAddVideo = (id: string, video: Video) => {
     console.log(id, video);
@@ -90,7 +90,10 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
         ? { ...values, id: currentLesson.id }
         : { ...values, idCourse };
       await modificationLesson(lessonValues);
-      toast.success(`Chapter ${currentLesson ? 'updated' : 'created'}!`);
+      toast({
+        variant: 'success',
+        title: `Chapter ${currentLesson ? 'updated' : 'created'}!`,
+      });
       setOpen(false);
       setCurrentLesson(undefined);
     }
@@ -103,10 +106,9 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
           resolve(true);
         }, 1000);
       });
-      toast.success('Chapters reordered');
-      // router.refresh();
+      toast({ title: 'Chapters reordered', variant: 'success' });
     } catch {
-      toast.error('Something went wrong');
+      toast({ title: 'Something went wrong', variant: 'destructive' });
     }
   };
 

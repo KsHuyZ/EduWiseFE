@@ -13,9 +13,16 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
+import { ImageType } from '@/types';
+
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 
-const ModalPreview = () => {
+interface IModalPreviewProps {
+  img: ImageType;
+  name: string;
+}
+
+const ModalPreview = ({ img, name }: IModalPreviewProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -26,7 +33,7 @@ const ModalPreview = () => {
             </div>
           </div>
           <Image
-            src='/images/java.webp'
+            src={img.url}
             width={500}
             height={200}
             className='rounded-md'
@@ -37,9 +44,7 @@ const ModalPreview = () => {
       <DialogContent className='min-w-fit duration-200'>
         <DialogHeader>
           <DialogDescription>Course Preview</DialogDescription>
-          <DialogTitle>
-            Tailwind CSS From Scratch | Learn By Building Projects
-          </DialogTitle>
+          <DialogTitle>{name}</DialogTitle>
         </DialogHeader>
         <ReactPlayer
           url='/videos/course-example.mp4'

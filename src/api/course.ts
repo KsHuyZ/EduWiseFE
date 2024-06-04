@@ -51,7 +51,7 @@ export const getCourses = (
     },
   });
 
-export const getTeacherCourses = (): Promise<TableApiResponse<CourseType[]>> =>
+export const getTeacherCourses = (): Promise<CourseType[]> =>
   axios.get(`/course/get-by-teacher`);
 
 export const getCoursesLesson = (id: string): Promise<Lesson[]> =>
@@ -75,3 +75,5 @@ export const getLessonByCourseId = (id: string): Promise<Lesson[]> =>
       resolve(__courseMock);
     }, 500);
   });
+export const getCourseById = (id: string): Promise<CourseType> =>
+  axios.get(`/course/get-by-id?id=${id}`);

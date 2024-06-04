@@ -43,7 +43,7 @@ const SignInForm = () => {
       await setCookies('token', { token, refreshToken });
       toast({
         title: 'Sign In Success',
-        description: 'You are sign iin success!',
+        description: 'You are sign in success!',
         variant: 'success',
       });
       router.replace('/');

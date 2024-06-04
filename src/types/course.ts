@@ -44,4 +44,5 @@ export type Lesson = {
   ordinalNumber?: number;
   isPublish?: boolean;
   videos: Video[];
+  units: any;
 } & LessonCredentials;
