@@ -1,7 +1,6 @@
 'use client';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { DollarSign } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useParams, useRouter } from 'next/navigation';
 import React, { ChangeEvent, useEffect, useState } from 'react';
@@ -13,6 +12,7 @@ import { useDebounce } from '@/hooks';
 import ImageUploader from '@/components/inputs/ImageUpload';
 import Input from '@/components/inputs/Input';
 import { Select as MultipleSelect } from '@/components/inputs/MultipleSelect';
+import Spinner from '@/components/loading/spinner';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -37,7 +37,7 @@ import { useToast } from '@/components/ui/use-toast';
 
 import {
   useCategory,
-  useCreateCourse,
+  useModificationCourse,
   useTag,
 } from '@/app/(global)/teacher/courses/(modification-course)/create/_hook';
 import { useCourseInfo } from '@/app/(global)/teacher/courses/(modification-course)/edit/info/[id]/hooks';
@@ -53,7 +53,7 @@ const CustomEditor = dynamic(
 );
 
 const CreateForm = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const [inputTagValue, setInputTagValue] = useState('');
   const [inputCategoryValue, setInputCategoryValue] = useState('');
   const [isPay, setIsPay] = useState(false);
@@ -64,19 +64,23 @@ const CreateForm = () => {
     debouncedCategoryInput
   );
   const { toast } = useToast();
-  const { isPending, mutateAsync: createCourse } = useCreateCourse();
+  const { isPending, mutateAsync: modificationCourse } =
+    useModificationCourse(id);
   const router = useRouter();
   const form = useForm<z.infer<typeof courseInfoSchema>>({
     resolver: zodResolver(courseInfoSchema),
     defaultValues: courseInitialValues,
   });
-  const { data } = useCourseInfo(id as string);
+  const { data, isLoading } = useCourseInfo(id as string);
 
   const onSubmit = async (values: z.infer<typeof courseInfoSchema>) => {
     try {
-      const result = await createCourse(values);
+      const result = await modificationCourse({ ...values, id });
       router.push(`/teacher/courses/edit/lesson/${result.id}`);
-      toast({ title: 'Create course success!', variant: 'success' });
+      toast({
+        title: `${id ? 'Update' : 'Create'} course success!`,
+        variant: 'success',
+      });
     } catch (error) {
       toast({ title: validateError(error), variant: 'destructive' });
     }
@@ -105,8 +109,8 @@ const CreateForm = () => {
         description,
         tags,
         categories,
+        file,
       });
-      form.setValue('file', file.url);
       if (price > 0) {
         setIsPay(true);
       }
@@ -114,7 +118,12 @@ const CreateForm = () => {
   }, [id, data]);
 
   return (
-    <div className=''>
+    <div className='relative'>
+      {isLoading && (
+        <div className='absolute w-full h-full bg-background/80 backdrop-blur-sm z-50 flex justify-center items-center'>
+          <Spinner />
+        </div>
+      )}
       <Form {...form}>
         <form
           className='py-3 space-y-4 overflow-y-scroll h-[350px]'
@@ -266,8 +275,7 @@ const CreateForm = () => {
                     </FormLabel>
                     <FormControl>
                       <Input
-                        leftIcon={DollarSign}
-                        placeholder='9$'
+                        placeholder='9đ'
                         type='number'
                         {...field}
                         onChange={(e) =>
@@ -288,8 +296,7 @@ const CreateForm = () => {
                     <FormLabel>Discount</FormLabel>
                     <FormControl>
                       <Input
-                        leftIcon={DollarSign}
-                        placeholder='9$'
+                        placeholder='9đ'
                         type='number'
                         {...field}
                         onChange={(e) =>

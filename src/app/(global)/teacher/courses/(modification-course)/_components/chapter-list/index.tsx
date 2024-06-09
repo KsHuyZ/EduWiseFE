@@ -15,6 +15,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 import FormQuiz from '@/app/(global)/teacher/courses/__components/form-quiz';
 import FormVideo from '@/app/(global)/teacher/courses/__components/form-video';
+import DeleteLesson from '@/app/(global)/teacher/courses/(modification-course)/_components/chapter-list/components/delete-lesson';
 
 import { Lesson, Video } from '@/types';
 
@@ -142,7 +143,7 @@ export const ChaptersList = ({
                               onClick={() => onSelectLesson(chapter)}
                               className='w-4 h-4 cursor-pointer hover:opacity-75 transition'
                             />
-                            <Trash className='w-4 h-4 cursor-pointer hover:opacity-75 transition' />
+                            <DeleteLesson lesson={chapter} />
                             <ChevronDown
                               onClick={() =>
                                 setCurrentLesson((prev) => {

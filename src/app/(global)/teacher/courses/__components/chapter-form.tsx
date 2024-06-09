@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/form';
 import { useToast } from '@/components/ui/use-toast';
 
-import { ChaptersList } from '@/app/(global)/teacher/courses/__components/chapter-list';
+import { ChaptersList } from '@/app/(global)/teacher/courses/(modification-course)/_components/chapter-list';
 import {
   useLessons,
   useModificationLesson,
@@ -126,7 +126,9 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
                 name='title'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel>
+                      Title <span className='text-red-500'>*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder='Title' {...field} />
                     </FormControl>
@@ -139,7 +141,9 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
                 name='content'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Lesson content</FormLabel>
+                    <FormLabel>
+                      Lesson content <span className='text-red-500'>*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder='Lesson content' {...field} />
                     </FormControl>

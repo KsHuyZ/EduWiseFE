@@ -14,7 +14,15 @@ export const metadata: Metadata = {
   description: 'Courses page',
 };
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({
+  children,
+  params: { id },
+}: {
+  children: React.ReactNode;
+  params: {
+    id?: string;
+  };
+}) => {
   return (
     <div className='m-4'>
       <div className='w-screen h-screen bg-white z-50 fixed top-0 left-0'>
@@ -46,7 +54,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <div className='mx-4'>
           <Card className='shadow-md '>
             <CardHeader>
-              <CardTitle>Create course</CardTitle>
+              <CardTitle>{id ? 'Update' : 'Create'} course</CardTitle>
             </CardHeader>
             <CardContent>
               <Tab>{children}</Tab>

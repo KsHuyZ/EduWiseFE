@@ -1,9 +1,11 @@
 'use client';
 import { Search } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { useInView } from 'react-intersection-observer';
 
 import { useDebounce } from '@/hooks';
 
@@ -20,10 +22,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 
 import FilterSheet from '@/app/(global)/courses/_components/FilterSheet';
 import { useCategory, useCourse } from '@/app/(global)/courses/_hooks';
-
 const Courses = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -47,12 +49,12 @@ const Courses = () => {
       }
       return replace(`${pathname}?${params.toString()}`);
     },
-    [searchParams]
+    [pathname, replace, searchParams]
   );
   const sortBy = searchParams.get('sortBy');
   const priceMin = searchParams.get('priceMin');
   const priceMax = searchParams.get('priceMax');
-  const keywordQuery = useDebounce(keyword!, 500);
+  const keywordQuery = useDebounce(keyword ?? '', 500);
 
   const { data, isLoading, isError, error } = useCourse(
     sortBy,
@@ -61,7 +63,7 @@ const Courses = () => {
     keywordQuery
   );
   const categoryQuery = useCategory();
-
+  const { ref } = useInView();
   useEffect(() => {
     if (isError) {
       toast.error(error.message);
@@ -98,15 +100,19 @@ const Courses = () => {
       </div>
       <div className='flex flex-col space-y-8'>
         <div className='flex flex-row items-center space-x-4'>
-          {categoryQuery.data?.map((category) => (
-            <Badge
-              key={category.id}
-              variant='outline'
-              className='hover:bg-primary-500 duration-150 cursor-pointer'
-            >
-              {category.name}
-            </Badge>
-          ))}
+          {categoryQuery.isLoading
+            ? Array.from({ length: 5 }).map((_, index) => (
+                <Skeleton key={index} className='rounded-md w-8 h-2' />
+              ))
+            : categoryQuery.data?.map((category) => (
+                <Badge
+                  key={category.id}
+                  variant='outline'
+                  className='hover:bg-primary-500 duration-150 cursor-pointer'
+                >
+                  {category.name}
+                </Badge>
+              ))}
         </div>
         <div className='flex flex-col space-y-4'>
           {!isLoading && data?.pages === 0 ? (
@@ -128,8 +134,11 @@ const Courses = () => {
                   <CourseCard loading={isLoading} key={index} />
                 ))
               : data?.items.map((course) => (
-                  <CourseCard key={course.id} course={course} />
+                  <Link href={`/courses/${course.id}`} key={course.id}>
+                    <CourseCard course={course} />
+                  </Link>
                 ))}
+            <div ref={ref} />
           </div>
         </div>
       </div>

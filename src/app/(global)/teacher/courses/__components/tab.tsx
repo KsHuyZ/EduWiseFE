@@ -18,7 +18,7 @@ const Tab = ({ children }: ITab) => {
     () => [
       {
         label: 'Course info',
-        value: 'create/info',
+        value: !id ? 'create/info' : `edit/info/${id}`,
       },
       {
         label: 'Lesson',

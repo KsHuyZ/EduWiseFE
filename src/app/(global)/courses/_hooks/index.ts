@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getAllCourseCategories, getCourses } from '@/api';
+import { getAllCourseCategories, getCourses, getLessonByCourseId } from '@/api';
 
 export const useCourse = (
   sortBy: string | null,
@@ -15,3 +15,9 @@ export const useCourse = (
 
 export const useCategory = () =>
   useQuery({ queryKey: ['category'], queryFn: getAllCourseCategories });
+
+export const useLessonList = (id: string) =>
+  useQuery({
+    queryKey: ['lesson', id],
+    queryFn: () => getLessonByCourseId(id),
+  });

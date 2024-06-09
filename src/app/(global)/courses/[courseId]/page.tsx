@@ -25,7 +25,7 @@ import { getCourseById } from '@/api';
 import CourseList from '@/app/(global)/courses/[courseId]/_components/course-list';
 import ModalPreview from '@/app/(global)/courses/[courseId]/_components/modal-preview';
 import PayMent from '@/app/(global)/courses/[courseId]/_components/payment';
-import { generateNameColor } from '@/utils';
+import { formatPrice, generateNameColor } from '@/utils';
 
 interface CourseIdProps {
   params: {
@@ -148,7 +148,7 @@ const CourseIdPage = async ({ params: { courseId } }: CourseIdProps) => {
           <Card className='sticky top-0'>
             <CardHeader>
               <CardTitle>
-                {course.price === 0 ? 'Free' : `${course.price}$`}
+                {course.price === 0 ? 'Free' : `${formatPrice(course.price)}`}
               </CardTitle>
             </CardHeader>
             <CardContent>

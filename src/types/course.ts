@@ -1,6 +1,7 @@
 import { ICategory, ImageType, ITag } from '@/types';
 
 export type CourseCredentials = {
+  id?: string;
   name: string;
   description: string;
   level: string;
@@ -8,7 +9,7 @@ export type CourseCredentials = {
   price: number | string;
   tags: ITag[];
   categories: ICategory[];
-  file?: FileList | null;
+  file?: any;
   status?: string;
 };
 
@@ -44,5 +45,12 @@ export type Lesson = {
   ordinalNumber?: number;
   isPublish?: boolean;
   videos: Video[];
-  units: any;
+  units?: any[];
 } & LessonCredentials;
+
+export type TVideoCredentials = {
+  title: string;
+  file?: File;
+  idLesson: string;
+  description: string;
+};
