@@ -4,6 +4,7 @@ export type TUser = {
   lastName: string;
   email: string;
   roles: string[];
+  avatar?: string;
 };
 
 export type TSignInCredentials = {

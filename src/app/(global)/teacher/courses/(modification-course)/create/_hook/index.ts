@@ -6,6 +6,7 @@ import {
   getCategoriesByName,
   getCoursesLesson,
   getTagsByName,
+  updateCourses,
   updateLesson,
 } from '@/api';
 
@@ -25,9 +26,10 @@ export const useCategory = (title: string) =>
     enabled: !!title,
   });
 
-export const useCreateCourse = () =>
+export const useModificationCourse = (id?: string) =>
   useMutation({
-    mutationFn: (course: CourseCredentials) => createCourses(course),
+    mutationFn: (course: CourseCredentials) =>
+      id ? updateCourses(course) : createCourses(course),
   });
 
 export const useLessons = (id?: string) =>

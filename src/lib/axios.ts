@@ -49,8 +49,8 @@ axios.interceptors.response.use(
     ) {
       originalRequest._retry = true;
 
-      const token = (await getCookies('token')) as Token;
-      const refreshToken = token.refreshToken;
+      const token = (await getCookies('token')) as Token | undefined;
+      const refreshToken = token?.refreshToken;
       if (refreshToken) {
         const result = await refreshTokenApi(refreshToken);
         const { token, refreshToken: newRefreshToken } = result;

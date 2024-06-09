@@ -20,8 +20,8 @@ import { UseFormReturn } from 'react-hook-form';
 
 import { cn } from '@/lib/utils';
 
-import Button from '@/components/buttons/Button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 import { Lesson, Video } from '@/types';
 
@@ -128,7 +128,7 @@ export const ChaptersList = ({
                       </div>
                       {chapter.title}
                       <div className='ml-auto pr-2 flex items-center gap-x-2'>
-                        {chapter.isFree && <Badge>Free</Badge>}
+                        {/* {chapter.isFree && <Badge>Free</Badge>} */}
                         <Pencil
                           onClick={() => setIsUpdate(true)}
                           className='w-4 h-4 cursor-pointer hover:opacity-75 transition'

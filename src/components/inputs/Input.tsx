@@ -10,7 +10,7 @@ const InputSize = ['sm', 'md', 'lg'] as const;
 type InputProps = {
   htmlFor?: string;
   label?: string;
-  error?: string;
+  error?: unknown;
   leftIcon?: IconType | LucideIcon;
   rightIcon?: IconType | LucideIcon;
   size?: (typeof InputSize)[number];
@@ -77,10 +77,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {...rest}
           />
         </div>
-
-        <p className={cn('text-sm text-error', error && 'animate-fadetop')}>
-          {error}
-        </p>
       </div>
     );
   }

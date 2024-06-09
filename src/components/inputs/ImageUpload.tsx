@@ -3,7 +3,6 @@ import { XIcon } from 'lucide-react';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 
 import { cn } from '@/lib/utils';
-import { ImageType } from '@/types';
 
 type InputProps = {
   htmlFor?: string;
@@ -38,6 +37,12 @@ const ImageUploader = React.forwardRef<HTMLInputElement, InputProps>(
         onClear();
       }
     };
+
+    useEffect(() => {
+      if (value?.url) {
+        setFilePreview(value.url);
+      }
+    }, [value]);
 
     return (
       <section className='w-full items-center'>

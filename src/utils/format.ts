@@ -1,7 +1,7 @@
 export const formatPrice = (price?: number) => {
   if (!price) return 'Free';
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'VND',
   }).format(price);
 };

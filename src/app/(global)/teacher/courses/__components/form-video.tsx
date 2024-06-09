@@ -1,13 +1,13 @@
 'use client';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertCircle, Plus } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
 import { z } from 'zod';
 
 import Input from '@/components/inputs/Input';
-import Tiptap from '@/components/inputs/Tiptap';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -27,33 +27,18 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 
+import { useCreateVideo } from '@/app/(global)/teacher/courses/_hooks';
 import VideoUploader from '@/app/(global)/teacher/courses/[courseId]/_components/upload-video';
-import { validateError } from '@/utils';
+import { createVideoSchema } from '@/validator';
 
 import { Video } from '@/types';
 
-const defaultValues = {
-  name: '',
-  description: '',
-  file: null,
-};
-
-const ACCEPTED_VIDEO_TYPES = [
-  'video/mp4',
-  'video/webm',
-  'video/quicktime',
-  'video/x-msvideo',
-  'video/x-matroska',
-];
-
-const schema = z.object({
-  title: z.string().min(1),
-  description: z.string().min(1),
-  file: z.any().refine((file) => {
-    return ACCEPTED_VIDEO_TYPES.includes(file?.type);
-  }, 'Only .mp4, .webm formats are supported.'),
-  preview: z.boolean().default(false),
-});
+const CustomEditor = dynamic(
+  () => {
+    return import('@/components/inputs/CustomEditor');
+  },
+  { ssr: false }
+);
 
 interface IFormProps {
   onAddVideo: (id: string, video: Video) => void;
@@ -61,28 +46,22 @@ interface IFormProps {
 }
 
 const FormVideo = ({ onAddVideo, lessonId }: IFormProps) => {
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues,
+  const form = useForm<z.infer<typeof createVideoSchema>>({
+    resolver: zodResolver(createVideoSchema),
   });
   const [open, setOpen] = useState(false);
+  const { mutateAsync: createVideo, isPending } = useCreateVideo();
 
-  const onSubmit = (values: z.infer<typeof schema>) => {
-    try {
-      if (lessonId) {
-        onAddVideo(lessonId, {
-          ...values,
-          id: Math.random().toString(),
-          videoUrl: '',
-          type: 'video',
-        });
-        toast.success('Create course success!');
-        form.reset();
-        setOpen(false);
-      }
-    } catch (error) {
-      toast.error(validateError(error));
+  const onSubmit = async () => {
+    const values = form.getValues();
+    if (lessonId && values.file) {
+      await createVideo({ ...values, idLesson: lessonId });
+      setOpen(false);
     }
+  };
+
+  const onEditorChange = (_: unknown, editor: ClassicEditor) => {
+    form.setValue('description', editor.getData());
   };
 
   return (
@@ -95,7 +74,7 @@ const FormVideo = ({ onAddVideo, lessonId }: IFormProps) => {
           <DialogHeader>
             <DialogTitle>Create Lesson</DialogTitle>
           </DialogHeader>
-          <div className='h-[400px] overflow-y-scroll no-scrollbar'>
+          <div className='overflow-y-scroll no-scrollbar'>
             <div className='w-full'>
               <Form {...form}>
                 <form className='space-y-2'>
@@ -139,13 +118,16 @@ const FormVideo = ({ onAddVideo, lessonId }: IFormProps) => {
                       <FormItem>
                         <FormLabel>Description</FormLabel>
                         <FormControl>
-                          <Tiptap {...field} value={field.value} />
+                          <CustomEditor
+                            value={field.value}
+                            onChange={onEditorChange}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <FormField
+                  {/* <FormField
                     control={form.control}
                     name='preview'
                     render={({ field }) => (
@@ -169,13 +151,13 @@ const FormVideo = ({ onAddVideo, lessonId }: IFormProps) => {
                         <FormMessage />
                       </FormItem>
                     )}
-                  />
+                  /> */}
                 </form>
               </Form>
             </div>
           </div>
           <DialogFooter>
-            <Button type='submit' onClick={form.handleSubmit(onSubmit)}>
+            <Button type='submit' isLoading={isPending} onClick={onSubmit}>
               Submit
             </Button>
           </DialogFooter>
