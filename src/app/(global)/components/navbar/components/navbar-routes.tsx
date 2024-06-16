@@ -92,13 +92,15 @@ const NavbarRoutes = ({ user }: { user?: TUser }) => {
         {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Image
-                src={!user?.avatar ? '/images/avatar.jpg' : user.avatar}
-                width={50}
-                height={50}
-                alt='avatar'
-                className='rounded-full border p-1'
-              />
+              <div className='w-12 h-12'>
+                <Image
+                  src={!user?.avatar ? '/images/avatar.jpg' : user.avatar}
+                  width={50}
+                  height={50}
+                  alt='avatar'
+                  className='rounded-full border p-1'
+                />
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <div className='flex flex-col space-y-2 px-2'>

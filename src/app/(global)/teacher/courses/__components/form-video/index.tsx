@@ -31,8 +31,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 
+import VideoUploader from '@/app/(global)/teacher/courses/__components/form-video/components/video-uploader';
 import { useCreateVideo } from '@/app/(global)/teacher/courses/_hooks';
-import VideoUploader from '@/app/(global)/teacher/courses/[courseId]/_components/upload-video';
 import { createVideoSchema } from '@/validator';
 
 import { TUnit } from '@/types';

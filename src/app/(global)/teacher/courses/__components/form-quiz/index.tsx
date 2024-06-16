@@ -28,8 +28,8 @@ import {
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 
+import Answers from '@/app/(global)/teacher/courses/__components/form-quiz/components/answers';
 import { useCreateQuiz } from '@/app/(global)/teacher/courses/_hooks';
-import Answers from '@/app/(global)/teacher/courses/[courseId]/_components/FormQuestion/components/Answers';
 import { initialQuestions } from '@/constant';
 import { formSchema, quizGroupSchema } from '@/validator';
 interface FormQuizProps {

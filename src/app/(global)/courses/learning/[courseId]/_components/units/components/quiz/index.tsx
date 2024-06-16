@@ -19,7 +19,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useQuestion } from '@/app/(global)/_hooks';
 import CountdownTime from '@/app/(global)/courses/learning/[courseId]/_components/units/components/quiz/components/countdown-time';
 
-import { TUnit } from '@/types';
+import { TQuestionResults, TUnit } from '@/types';
 
 interface IQuizProps {
   selectUnit?: TUnit;
@@ -33,6 +33,8 @@ const Quiz = ({ selectUnit }: IQuizProps) => {
   const [currentIndex, setCurrentIndex] = useState(
     Number(searchParams.get('question')) ?? 0
   );
+  const [questionResultList, setQuestionResultList] =
+    useState<TQuestionResults[]>();
   const { data, isLoading } = useQuestion(
     selectUnit?.quizResponse?.id,
     selectUnit?.type
@@ -50,6 +52,9 @@ const Quiz = ({ selectUnit }: IQuizProps) => {
     },
     [pathName, replace, searchParams]
   );
+
+  const handleAddQuestionList = () => {};
+
   return (
     <>
       <AlertDialog open={open} onOpenChange={setOpen}>
@@ -123,6 +128,7 @@ const Quiz = ({ selectUnit }: IQuizProps) => {
                         <Button
                           key={choice.content}
                           variant={!choice.correct ? 'outline' : 'default'}
+                          // onClick={() => }
                         >
                           {choice.content}
                         </Button>
