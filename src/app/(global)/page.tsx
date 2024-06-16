@@ -4,6 +4,7 @@ import React from 'react';
 
 import { getCookies } from '@/lib/action';
 
+import PermissionDenied from '@/components/permission-denied';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 
@@ -14,7 +15,7 @@ import { TUser } from '@/types';
 
 const HomePage = () => {
   const user = getCookies('user') as TUser;
-  return (
+  return user ? (
     <div className='grid grid-cols-3 gap-2'>
       <div className='flex flex-col space-y-8 px-4 col-span-2'>
         <div
@@ -54,6 +55,8 @@ const HomePage = () => {
       </div>
       <Overview />
     </div>
+  ) : (
+    <PermissionDenied />
   );
 };
 

@@ -57,8 +57,6 @@ const SignInForm = () => {
     }
   }, [error, form]);
 
-  console.log(form.formState.errors.email);
-
   return (
     <Form {...form}>
       <form

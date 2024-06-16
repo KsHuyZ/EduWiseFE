@@ -1,5 +1,3 @@
-import { X } from 'lucide-react';
-import Image from 'next/image';
 import React from 'react';
 
 import Input from '@/components/inputs/Input';
@@ -9,14 +7,13 @@ import { Label } from '@/components/ui/label';
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
 
-import { __courseMock } from '@/__mocks__';
 import Payment from '@/app/(global)/cart/_components/payment';
+import TableCart from '@/app/(global)/cart/_components/table-cart';
 import { formatPrice } from '@/utils';
 
 const Cart = () => {
@@ -34,39 +31,7 @@ const Cart = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {__courseMock.map((course) => (
-                  <TableRow
-                    key={course.id}
-                    className='grid-cols-6 gap-2 items-center'
-                  >
-                    <TableCell className='font-medium col-span-4'>
-                      <div className='flex items-center justify-between cursor-pointer duration-200 p-2 rounded-sm'>
-                        <div className='flex items-center space-x-2'>
-                          <Image
-                            src='/images/spider.jpg'
-                            width={100}
-                            height={100}
-                            alt='COurse img'
-                            className='rounded-md overflow-hidden'
-                          />
-                          <div className='flex flex-col space-y-2'>
-                            <Label>{course.title}</Label>
-                            <div className='flex items-center space-x-2'>
-                              <span>Author:</span>
-                              <span className='text-sm'>Phan Tien huy</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{formatPrice(course.price)}</TableCell>
-                    <TableCell>
-                      <Button variant='ghost'>
-                        <X size={15} className='text-gray-500' />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                <TableCart />
               </TableBody>
             </Table>
           </CardContent>

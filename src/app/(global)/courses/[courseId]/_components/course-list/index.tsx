@@ -1,5 +1,11 @@
 'use client';
-import { ChevronDown, PlayCircle, StickyNote } from 'lucide-react';
+import {
+  BookOpen,
+  ChevronDown,
+  Clock,
+  PlayCircle,
+  StickyNote,
+} from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -8,6 +14,8 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { useLessonList } from '@/app/(global)/courses/_hooks';
+
+import { EUnitType } from '@/types';
 
 interface CourseListProps {
   id: string;
@@ -39,7 +47,7 @@ const CourseList = ({ id }: CourseListProps) => {
           Sections
         </Button>
       </div>
-      <div className='mb-4 duration-150'>
+      <div className='mb-4 duration-150 space-y-2'>
         {isLoading
           ? Array.from({ length: 5 }).map((_, index) => (
               <div
@@ -73,12 +81,14 @@ const CourseList = ({ id }: CourseListProps) => {
           : data?.map((lesson) => (
               <div
                 key={lesson.id}
-                className='border-sky-200 bg-primary-50 shadow-sm'
+                className={cn(
+                  'duration-150 hover:border-primary-300 border rounded-md',
+                  currentLesson.includes(lesson.id) ? 'border-primary-300' : ''
+                )}
               >
                 <div
                   className={cn(
-                    'flex items-center gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 rounded-md p-4 text-sm mb-1 cursor-pointer',
-                    'bg-sky-100  text-primary-700'
+                    'flex items-center gap-x-2 text-slate-700 p-2 px-4 text-sm cursor-pointer'
                   )}
                   onClick={() =>
                     setCurrentLesson((prev) => {
@@ -89,21 +99,64 @@ const CourseList = ({ id }: CourseListProps) => {
                     })
                   }
                 >
-                  <span className='font-bold '>{lesson.title}</span>
-                  <div className='ml-auto pr-2 flex items-center gap-x-2'>
-                    <ChevronDown
+                  <div className='flex flex-col'>
+                    <span
                       className={cn(
-                        'w-4 h-4 cursor-pointer hover:opacity-75 transition',
-                        currentLesson.includes(lesson.id) ? 'rotate-180' : ''
+                        currentLesson.includes(lesson.id)
+                          ? 'text-primary-600'
+                          : '',
+                        'font-bold duration-700'
                       )}
-                    />
+                    >
+                      {lesson.title}
+                    </span>
+                    <div className='flex space-x-2 items-center'>
+                      <Clock size={15} />
+                      <span
+                        className={cn(
+                          currentLesson.includes(lesson.id)
+                            ? 'text-primary-600'
+                            : '',
+                          'text-sm duration-700 hover:text-primary-600'
+                        )}
+                      >
+                        20:20
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className='ml-auto pr-2 flex items-center gap-x-2'>
+                    <div className='flex flex-col items-end'>
+                      <ChevronDown
+                        className={cn(
+                          'w-4 h-4 cursor-pointer hover:opacity-75 transition hover:text-primary-600',
+                          currentLesson.includes(lesson.id)
+                            ? 'rotate-180 text-primary-600'
+                            : ''
+                        )}
+                      />
+                      <div
+                        className={cn(
+                          currentLesson.includes(lesson.id)
+                            ? 'text-primary-600'
+                            : '',
+                          'text-sm duration-700 hover:text-primary-600 flex items-center space-x-2'
+                        )}
+                      >
+                        <BookOpen size={15} />
+                        <span>
+                          {lesson.units?.length} lesson
+                          {Number(lesson.units?.length) > 0 ? 's' : ''}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div
                   className={cn(
                     'no-scrollbar duration-700',
                     currentLesson.includes(lesson.id)
-                      ? 'overflow-y-scroll max-h-[500px]'
+                      ? 'max-h-[200px] overflow-y-scroll'
                       : 'max-h-0 overflow-hidden'
                   )}
                 >
@@ -120,11 +173,13 @@ const CourseList = ({ id }: CourseListProps) => {
                           <div className='flex flex-col'>
                             <span className='text-primary-600'>
                               {index + 1}.{' '}
-                              {video.type === 'video' ? 'Lesson' : 'Quiz'}:{' '}
-                              {video.title}
+                              {video.type === EUnitType.VIDEO
+                                ? 'Lesson'
+                                : 'Quiz'}
+                              : {video.title}
                             </span>
                             <div className='flex items-center text-xs'>
-                              {video.type === 'video' ? (
+                              {video.type === EUnitType.VIDEO ? (
                                 <PlayCircle size={15} />
                               ) : (
                                 <StickyNote size={15} />

@@ -7,7 +7,7 @@ import NextImage from '@/components/NextImage';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 
-import CourseVideo from '@/app/(global)/courses/learning/[courseId]/_components/video';
+import CourseVideo from '@/app/(global)/courses/learning/[courseId]/_components/units';
 
 interface LearningPageProps {
   params: {

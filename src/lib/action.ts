@@ -3,8 +3,13 @@
 import { cookies } from 'next/headers';
 export const getCookies = (key: string) => {
   const value = cookies().get(key)?.value;
-  if (value && value !== '') {
-    return JSON.parse(value);
+  try {
+    if (value && value !== '') {
+      return JSON.parse(value);
+    }
+    return value;
+  } catch {
+    return value;
   }
 };
 

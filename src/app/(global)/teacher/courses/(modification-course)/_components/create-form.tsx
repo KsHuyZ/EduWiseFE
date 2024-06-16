@@ -262,6 +262,19 @@ const CreateForm = () => {
               </div>
             </div>
           </div>
+          <div className='flex flex-col space-y-4'>
+            <Label>
+              Certificate <span className='text-red-600'>*</span>
+            </Label>
+            <div className='flex space-x-3'>
+              <Checkbox
+                id='free'
+                checked={!isPay}
+                onClick={() => setIsPay(!isPay)}
+              />
+              <Label>Free</Label>
+            </div>
+          </div>
 
           {isPay ? (
             <div className='grid grid-cols-2 gap-3'>
@@ -311,6 +324,25 @@ const CreateForm = () => {
               />
             </div>
           ) : null}
+
+          <FormField
+            control={form.control}
+            name='short_description'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Short Description</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='Short description'
+                    className='h-32'
+                    {...field}
+                    disabled={isPending}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <div className='w-full'>
             <FormField

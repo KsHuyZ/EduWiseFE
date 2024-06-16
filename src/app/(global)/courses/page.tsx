@@ -3,8 +3,7 @@ import { Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useCallback, useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
+import React, { useCallback, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { useDebounce } from '@/hooks';
@@ -56,7 +55,7 @@ const Courses = () => {
   const priceMax = searchParams.get('priceMax');
   const keywordQuery = useDebounce(keyword ?? '', 500);
 
-  const { data, isLoading, isError, error } = useCourse(
+  const { data, isLoading } = useCourse(
     sortBy,
     priceMin,
     priceMax,
@@ -64,11 +63,6 @@ const Courses = () => {
   );
   const categoryQuery = useCategory();
   const { ref } = useInView();
-  useEffect(() => {
-    if (isError) {
-      toast.error(error.message);
-    }
-  }, [isError, error]);
 
   return (
     <div className='p-6 space-y-5'>
