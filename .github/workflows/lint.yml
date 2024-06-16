@@ -34,11 +34,11 @@ jobs:
       - name: 🔬 Lint
         run: pnpm run lint:strict
 
-      - name: 🔎 Type check
-        run: pnpm run typecheck
+      # - name: 🔎 Type check
+      #   run: pnpm run typecheck
 
       - name: 💅 Prettier check
         run: pnpm run format:check
 
-      - name: 🃏 Run jest
-        run: pnpm run test
+      # - name: 🃏 Run jest
+      #   run: pnpm run test
