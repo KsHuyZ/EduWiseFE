@@ -1,6 +1,7 @@
-import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import React from 'react';
+
+import { Label } from '@/components/ui/label';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
