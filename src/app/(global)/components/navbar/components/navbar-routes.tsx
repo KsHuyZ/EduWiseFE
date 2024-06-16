@@ -1,9 +1,11 @@
 'use client';
 
+import { getCookie, setCookie } from 'cookies-next';
 import { LogIn, LogOutIcon, Settings } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import { useTranslations } from 'next-intl';
+import React, { useState } from 'react';
 
 import { deleteCookie } from '@/lib/action';
 import { cn } from '@/lib/utils';
@@ -17,6 +19,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 import Cart from '@/app/(global)/components/navbar/components/cart';
 import SettingTheme from '@/app/(global)/components/navbar/components/setting-theme';
@@ -24,8 +35,9 @@ import SettingTheme from '@/app/(global)/components/navbar/components/setting-th
 import { TUser } from '@/types';
 
 const NavbarRoutes = ({ user }: { user?: TUser }) => {
+  const [locale, setLocale] = useState(getCookie('NEXT_LOCALE') ?? 'en');
   const router = useRouter();
-
+  const t = useTranslations('head');
   const handleSignOut = async () => {
     // await signOut();
     await router.replace('/sign-in');
@@ -33,9 +45,47 @@ const NavbarRoutes = ({ user }: { user?: TUser }) => {
     await deleteCookie('token');
   };
 
+  const onChangeLanguage = (lang: string) => {
+    setCookie('NEXT_LOCALE', lang);
+    setLocale(lang);
+    router.refresh();
+  };
+
   return (
     <div className='ml-auto flex gap-x-2'>
       <div className='flex items-center space-x-4'>
+        <Select value={locale} onValueChange={onChangeLanguage}>
+          <SelectTrigger>
+            <SelectValue placeholder='Select a language' />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>{t('language')}</SelectLabel>
+              <SelectItem value='vi'>
+                <div className='flex items-center space-x-2'>
+                  <Image
+                    src='/images/vn.png'
+                    width={20}
+                    height={20}
+                    alt='vie'
+                  />
+                  <span>{t('vietnam')}</span>
+                </div>
+              </SelectItem>
+              <SelectItem value='en'>
+                <div className='flex items-center space-x-2'>
+                  <Image
+                    src='/images/uk.png'
+                    width={20}
+                    height={20}
+                    alt='vie'
+                  />
+                  <span>English</span>
+                </div>
+              </SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
         <Cart />
         <SettingTheme />
 

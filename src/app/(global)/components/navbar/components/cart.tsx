@@ -14,8 +14,7 @@ import {
 } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 
-import { useUserCart } from '@/app/(global)/components/navbar/hooks';
-import { formatPrice } from '@/utils';
+import { useUserCart } from '@/app/(global)/_hooks';
 
 const Cart = () => {
   const { data, isLoading } = useUserCart();
@@ -24,26 +23,30 @@ const Cart = () => {
       <SheetTrigger asChild>
         <div className='relative inline-flex'>
           <ShoppingCart className='cursor-pointer text-gray-500' />
-          <span className="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[4%] right-[2%] translate-x-2/4 -translate-y-2/4 bg-red-500 text-white min-w-3 min-h-3">
-            {data?.length}
-          </span>
+          {data && data.length > 0 ? (
+            <span className="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[4%] right-[2%] translate-x-2/4 -translate-y-2/4 bg-red-500 text-white min-w-3 min-h-3">
+              {data?.length}
+            </span>
+          ) : null}
         </div>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader className='border-b pb-6 border-dashed'>
           <SheetTitle>Cart</SheetTitle>
         </SheetHeader>
-        <div className='flex flex-col space-y-8 items-center my-6'>
-          <div className='flex flex-col space-y-4 w-full'>
+        <div className='flex flex-col space-y-8 items-center my-6 w-full h-full'>
+          <div className='flex flex-col space-y-4 justify-center items-center'>
             {isLoading ? (
-              <div className='flex items-center space-x-4'>
-                <Skeleton className='h-14 w-14 rounded-sm' />
-                <div className='space-y-2'>
-                  <Skeleton className='h-4 w-[250px]' />
-                  <Skeleton className='h-4 w-[200px]' />
+              Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className='flex items-center space-x-4'>
+                  <Skeleton className='h-14 w-14 rounded-sm' />
+                  <div className='space-y-2'>
+                    <Skeleton className='h-4 w-[250px]' />
+                    <Skeleton className='h-4 w-[200px]' />
+                  </div>
                 </div>
-              </div>
-            ) : data?.length === 0 ? (
+              ))
+            ) : !data || data?.length === 0 ? (
               <div className='flex flex-col space-y-4 items-center'>
                 <Image
                   src='/images/empty.svg'
@@ -70,7 +73,7 @@ const Cart = () => {
                         className='rounded-md overflow-hidden'
                       />
                       <div className='flex flex-col space-y-2'>
-                        <Label className='line-clamp-1'>{item.title}</Label>
+                        <Label className='line-clamp-1'>{item.name}</Label>
                         <span>Phan Tien huy</span>
                       </div>
                     </div>
@@ -87,7 +90,11 @@ const Cart = () => {
           <div className='flex flex-col space-y-4'>
             <div className='flex space-x-2 items-center justify-between'>
               <Label>Total:</Label>
-              <span className='text-2xl text-bold'>{formatPrice(29000)}</span>
+              <span className='text-2xl text-bold'>
+                {data && data.length > 0
+                  ? data.reduce((current, course) => course.price + current, 0)
+                  : '0đ'}
+              </span>
             </div>
             <Link href='/cart'>
               <Button className='w-full'>See detail</Button>

@@ -5,7 +5,16 @@ import {
   Droppable,
   DropResult,
 } from '@hello-pangea/dnd';
-import { ChevronDown, Download, Grip, Pencil, Trash } from 'lucide-react';
+import {
+  ChevronDown,
+  Download,
+  Grip,
+  Pen,
+  Pencil,
+  PlayCircle,
+  StickyNote,
+  Trash,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -17,12 +26,11 @@ import FormQuiz from '@/app/(global)/teacher/courses/__components/form-quiz';
 import FormVideo from '@/app/(global)/teacher/courses/__components/form-video';
 import DeleteLesson from '@/app/(global)/teacher/courses/(modification-course)/_components/chapter-list/components/delete-lesson';
 
-import { Lesson, Video } from '@/types';
+import { EUnitType, Lesson, TUnit } from '@/types';
 
 interface ChaptersListProps {
   items: Lesson[];
   onReorder: (updateData: { id: string; position: number }[]) => void;
-  onAddVideo: (id: string, video: Video) => void;
   loading?: boolean;
   onSelectLesson: (lesson: Lesson) => void;
 }
@@ -30,7 +38,6 @@ interface ChaptersListProps {
 export const ChaptersList = ({
   items,
   onReorder,
-  onAddVideo,
   loading,
   onSelectLesson,
 }: ChaptersListProps) => {
@@ -39,6 +46,7 @@ export const ChaptersList = ({
   const [currentLesson, setCurrentLesson] = useState<undefined | string>(
     undefined
   );
+  const [selectEdit, setSelectEdit] = useState<TUnit | undefined>(undefined);
 
   useEffect(() => {
     setIsMounted(true);
@@ -179,68 +187,58 @@ export const ChaptersList = ({
                                         'flex items-center space-x-2 '
                                       )}
                                     >
-                                      <div
-                                        key={`video_${units.id}`}
-                                        className='cursor-pointer w-full hover:bg-gray-200 m-2 p-2 rounded-sm transition'
-                                      >
+                                      <div className='cursor-pointer w-full hover:bg-gray-200 m-2 p-2 rounded-sm transition'>
                                         <div className='flex items-center mx-3 justify-between'>
                                           <div className='flex flex-col'>
                                             <span className='text-primary-600'>
-                                              {index + 1}. : {units.title}
+                                              {index + 1}: {units.title}
                                             </span>
                                             <div className='flex items-center text-xs'>
-                                              {/* {video.type === 'video' ? (
-                                              <PlayCircle size={15} />
-                                            ) : (
-                                              <StickyNote size={15} />
-                                            )}{' '} */}
-                                              <span className='ml-2'>
-                                                20:00
-                                              </span>
+                                              {units.type ===
+                                              EUnitType.VIDEO ? (
+                                                <>
+                                                  <PlayCircle
+                                                    size={15}
+                                                    className='text-gray-500'
+                                                  />
+                                                  <span className='ml-2'>
+                                                    20:00
+                                                  </span>
+                                                </>
+                                              ) : (
+                                                <StickyNote
+                                                  size={15}
+                                                  className='text-gray-500'
+                                                />
+                                              )}
                                             </div>
+                                          </div>
+                                          <div className='flex items-center'>
+                                            <Button
+                                              variant='ghost'
+                                              onClick={() =>
+                                                setSelectEdit(units)
+                                              }
+                                            >
+                                              <Pen size={15} />
+                                            </Button>
+                                            <Button variant='ghost'>
+                                              <Trash size={15} />
+                                            </Button>
                                           </div>
                                         </div>
                                       </div>
                                     </div>
                                   ))}
-                                  {/* {chapter.videos.map((video, index) => (
-                              <div
-                                key={`video_${video.id}`}
-                                className='cursor-pointer hover:bg-gray-200 m-2 p-2 rounded-sm transition bg-gray-50'
-                              >
-                                <div className='flex items-center mx-3 justify-between'>
-                                  <div className='flex flex-col'>
-                                    <span className='font-bold'>
-                                      {index + 1}.{' '}
-                                      {video.type === 'video'
-                                        ? 'Lesson'
-                                        : 'Quiz'}
-                                      : {video.title}
-                                    </span>
-                                    <div className='flex items-center text-xs'>
-                                      {video.type === 'video' ? (
-                                        <PlayCircle size={15} />
-                                      ) : (
-                                        <StickyNote size={15} />
-                                      )}{' '}
-                                      <span className='ml-2'>20:00</span>
-                                    </div>
-                                  </div>
-                                  <div className='flex items-center space-x-2'>
-                                    <Pencil className='w-4 h-4 cursor-pointer hover:opacity-75 transition' />
-                                    <Trash className='w-4 h-4 cursor-pointer hover:opacity-75 transition' />
-                                  </div>
-                                </div>
-                              </div>
-                            ))} */}
                                 </div>
                                 <div className='flex justify-between items-center'>
                                   <div className='grid grid-cols-2 gap-2'>
                                     <FormVideo
                                       lessonId={currentLesson}
-                                      onAddVideo={onAddVideo}
+                                      unit={selectEdit}
+                                      setUnit={setSelectEdit}
                                     />
-                                    <FormQuiz />
+                                    <FormQuiz lessonId={currentLesson} />
                                   </div>
                                   <div>
                                     <Button

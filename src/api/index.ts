@@ -2,6 +2,8 @@ export * from './auth';
 export * from './cart';
 export * from './category';
 export * from './course';
+export * from './enroll';
 export * from './payment';
+export * from './quiz';
 export * from './tag';
 export * from './user';

@@ -34,7 +34,7 @@ import {
   useModificationLesson,
 } from '@/app/(global)/teacher/courses/(modification-course)/create/_hook';
 
-import { Lesson, Video } from '@/types';
+import { Lesson } from '@/types';
 
 const formSchema = z.object({
   title: z
@@ -74,10 +74,6 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
     form.reset();
   }, [open]);
 
-  const onAddVideo = (id: string, video: Video) => {
-    console.log(id, video);
-  };
-
   const onSelectLesson = (lesson: Lesson) => {
     setOpen(true);
     setCurrentLesson(lesson);
@@ -115,7 +111,13 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+        <DialogContent
+          onInteractOutside={(e) => {
+            if (isPending) {
+              e.preventDefault();
+            }
+          }}
+        >
           <DialogHeader>
             <DialogTitle>Add chapter</DialogTitle>
           </DialogHeader>
@@ -172,7 +174,6 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
             loading={isLoading}
             onReorder={onReorder}
             items={lessons ?? []}
-            onAddVideo={onAddVideo}
             onSelectLesson={onSelectLesson}
           />
         </div>

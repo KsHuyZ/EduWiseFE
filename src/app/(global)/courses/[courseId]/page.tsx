@@ -1,5 +1,6 @@
 import { formatDistance } from 'date-fns';
 import { Award, Clock, GraduationCap, Signal } from 'lucide-react';
+import { Metadata, ResolvingMetadata } from 'next';
 import Link from 'next/link';
 import React from 'react';
 
@@ -23,17 +24,37 @@ import { Separator } from '@/components/ui/separator';
 import { __mockReviews } from '@/__mocks__';
 import { getCourseById } from '@/api';
 import CourseList from '@/app/(global)/courses/[courseId]/_components/course-list';
+import Enroll from '@/app/(global)/courses/[courseId]/_components/enroll';
 import ModalPreview from '@/app/(global)/courses/[courseId]/_components/modal-preview';
 import PayMent from '@/app/(global)/courses/[courseId]/_components/payment';
 import { formatPrice, generateNameColor } from '@/utils';
 
-interface CourseIdProps {
+type Props = {
   params: {
     courseId: string;
   };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // fetch data
+  const course = await getCourseById(params.courseId);
+
+  // optionally access and extend (rather than replace) parent metadata
+  const previousImages = (await parent).openGraph?.images || [];
+
+  return {
+    title: course.name,
+    openGraph: {
+      images: previousImages,
+    },
+  };
 }
 
-const CourseIdPage = async ({ params: { courseId } }: CourseIdProps) => {
+const CourseIdPage = async ({ params: { courseId } }: Props) => {
   const course = await getCourseById(courseId);
 
   return (
@@ -154,10 +175,14 @@ const CourseIdPage = async ({ params: { courseId } }: CourseIdProps) => {
             <CardContent>
               <div className='flex flex-col space-y-12'>
                 <div className='flex flex-col space-y-8'>
-                  <div className='flex flex-col space-y-4'>
-                    <Button>Add to cart</Button>
-                    <PayMent amount={course.price} />
-                  </div>
+                  {course.price === 0 ? (
+                    <Enroll id={course.id} />
+                  ) : (
+                    <div className='flex flex-col space-y-4'>
+                      <Button>Add to cart</Button>
+                      <PayMent amount={course.price} />
+                    </div>
+                  )}
                   <div className='flex flex-col space-y-4'>
                     <Label>This course includes:</Label>
                     <div className='flex flex-col space-y-2 text-gray-500'>

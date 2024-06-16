@@ -1,4 +1,4 @@
-import { ICategory, ImageType, ITag } from '@/types';
+import { ICategory, ImageType, ITag, TQuiz } from '@/types';
 
 export type CourseCredentials = {
   id?: string;
@@ -24,13 +24,13 @@ export type CourseType = {
   chapters?: Lesson[];
 };
 
-export type Video = {
+export type TVideo = {
   id: string;
   title: string;
+  content: string;
+  url: string;
+  idUnit: boolean;
   description: string;
-  videoUrl: string;
-  preview: boolean;
-  type: 'video' | 'quiz';
 };
 
 export type LessonCredentials = {
@@ -40,12 +40,26 @@ export type LessonCredentials = {
   idCourse?: string;
 };
 
+export enum EUnitType {
+  VIDEO = 'video',
+  QUIZ = 'quiz',
+}
+
+export type TUnit = {
+  id: string;
+  idLesson: string;
+  title: string;
+  ordinalNumber: number;
+  type: EUnitType;
+  video?: TVideo;
+  quizResponse?: TQuiz;
+};
+
 export type Lesson = {
   id: string;
   ordinalNumber?: number;
   isPublish?: boolean;
-  videos: Video[];
-  units?: any[];
+  units: TUnit[];
 } & LessonCredentials;
 
 export type TVideoCredentials = {

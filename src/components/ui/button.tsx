@@ -91,7 +91,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         {children}
         {RightIcon && (
-          <div className={cn([size === 'sm' && 'mr-1.5'], [!size && 'mr-2'])}>
+          <div className={cn([size === 'sm' && 'mr-1.5'], [!size && 'ml-2'])}>
             <RightIcon
               size='1em'
               className={cn([size === 'sm' && 'md:text-md text-sm'])}

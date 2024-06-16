@@ -1,15 +1,20 @@
 'use client';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertCircle, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import React, { useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import Input from '@/components/inputs/Input';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -20,7 +25,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -31,7 +35,7 @@ import { useCreateVideo } from '@/app/(global)/teacher/courses/_hooks';
 import VideoUploader from '@/app/(global)/teacher/courses/[courseId]/_components/upload-video';
 import { createVideoSchema } from '@/validator';
 
-import { Video } from '@/types';
+import { TUnit } from '@/types';
 
 const CustomEditor = dynamic(
   () => {
@@ -41,11 +45,12 @@ const CustomEditor = dynamic(
 );
 
 interface IFormProps {
-  onAddVideo: (id: string, video: Video) => void;
   lessonId?: string;
+  unit?: TUnit;
+  setUnit: Dispatch<SetStateAction<TUnit | undefined>>;
 }
 
-const FormVideo = ({ onAddVideo, lessonId }: IFormProps) => {
+const FormVideo = ({ lessonId, unit, setUnit }: IFormProps) => {
   const form = useForm<z.infer<typeof createVideoSchema>>({
     resolver: zodResolver(createVideoSchema),
   });
@@ -57,6 +62,7 @@ const FormVideo = ({ onAddVideo, lessonId }: IFormProps) => {
     if (lessonId && values.file) {
       await createVideo({ ...values, idLesson: lessonId });
       setOpen(false);
+      setUnit(undefined);
     }
   };
 
@@ -64,69 +70,101 @@ const FormVideo = ({ onAddVideo, lessonId }: IFormProps) => {
     form.setValue('description', editor.getData());
   };
 
+  useEffect(() => {
+    if (unit) {
+      setOpen(true);
+      form.reset(unit);
+      form.setValue('file', unit.video?.url);
+    }
+  }, [setOpen, form, unit]);
+
+  const onClose = useCallback(
+    (value: boolean) => {
+      if (!value && isPending) {
+        return;
+      }
+      if (!value) {
+        form.reset({
+          title: '',
+          description: '',
+          file: undefined,
+          preview: false,
+        });
+        setUnit(undefined);
+      }
+      setOpen(value);
+    },
+    [setOpen, form, isPending, setUnit]
+  );
+
   return (
     <>
       <Button leftIcon={Plus} variant='outline' onClick={() => setOpen(true)}>
         Lesson
       </Button>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+      <Dialog open={open} onOpenChange={onClose}>
+        <DialogContent className='min-w-[1000px]'>
           <DialogHeader>
-            <DialogTitle>Create Lesson</DialogTitle>
+            <DialogTitle>{unit ? 'Edit' : 'Create'} Lesson</DialogTitle>
           </DialogHeader>
           <div className='overflow-y-scroll no-scrollbar'>
             <div className='w-full'>
               <Form {...form}>
-                <form className='space-y-2'>
-                  <FormField
-                    control={form.control}
-                    name='file'
-                    render={() => (
-                      <FormItem>
-                        <FormLabel>Video</FormLabel>
-                        <FormControl>
-                          <VideoUploader
-                            onChange={(e) =>
-                              form.setValue(
-                                'file',
-                                e.target.files ? e.target.files[0] : null
-                              )
-                            }
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name='title'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder='Eg: Introdution' {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name='description'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Description</FormLabel>
-                        <FormControl>
-                          <CustomEditor
-                            value={field.value}
-                            onChange={onEditorChange}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <form>
+                  <div className='grid grid-cols-2 gap-4'>
+                    <FormField
+                      control={form.control}
+                      name='file'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Video</FormLabel>
+                          <FormControl>
+                            <VideoUploader
+                              onChange={(e) =>
+                                form.setValue(
+                                  'file',
+                                  e.target.files ? e.target.files[0] : null
+                                )
+                              }
+                              value={field.value}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className='flex flex-col space-y-2'>
+                      <FormField
+                        control={form.control}
+                        name='title'
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder='Eg: Introdution' {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name='description'
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Description</FormLabel>
+                            <FormControl>
+                              <CustomEditor
+                                value={field.value}
+                                onChange={onEditorChange}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
                   {/* <FormField
                     control={form.control}
                     name='preview'

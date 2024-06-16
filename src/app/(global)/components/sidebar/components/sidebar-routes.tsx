@@ -8,34 +8,19 @@ import {
   LayoutDashboard,
   LucideIcon,
   MessageCircleMore,
+  ShoppingCart,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 import SidebarItem from '@/app/(global)/components/sidebar/components/sidebar-item';
+
+import { TUser } from '@/types';
 
 interface GuestRoutes {
   icon: LucideIcon;
   label: string;
   href: string;
 }
-
-const guestRoutes: GuestRoutes[] = [
-  {
-    icon: Layout,
-    label: 'Dashboard',
-    href: '/',
-  },
-  {
-    icon: GraduationCap,
-    label: 'Courses',
-    href: '/courses',
-  },
-  {
-    icon: Compass,
-    label: 'Browse',
-    href: '/search',
-  },
-];
 
 const teacherRoutes: GuestRoutes[] = [
   {
@@ -65,7 +50,37 @@ const teacherRoutes: GuestRoutes[] = [
   },
 ];
 
-export const SidebarRoutes = () => {
+interface ISidebarProps {
+  user?: TUser;
+}
+
+export const SidebarRoutes = ({ user }: ISidebarProps) => {
+  const guestRoutes: GuestRoutes[] = [
+    ...(user
+      ? [
+          {
+            icon: Layout,
+            label: 'Dashboard',
+            href: '/',
+          },
+          {
+            icon: ShoppingCart,
+            label: 'Cart',
+            href: '/cart',
+          },
+        ]
+      : []),
+    {
+      icon: GraduationCap,
+      label: 'Courses',
+      href: '/courses',
+    },
+    {
+      icon: Compass,
+      label: 'Browse',
+      href: '/search',
+    },
+  ];
   const pathname = usePathname();
   const isTeacherPage = pathname?.includes('/teacher');
   const routes = isTeacherPage ? teacherRoutes : guestRoutes;

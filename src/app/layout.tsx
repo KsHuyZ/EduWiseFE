@@ -1,10 +1,14 @@
 import { Metadata } from 'next';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 import NextTopLoader from 'nextjs-toploader';
 import * as React from 'react';
-import { Toaster } from '@/components/ui/toaster';
+
 import '@/styles/globals.css';
+
 // !STARTERCONF This is for demo purposes, remove @/styles/colors.css import immediately
-import '@/styles/colors.css';
+// import '@/styles/colors.css';
+import { Toaster } from '@/components/ui/toaster';
 
 import Providers from '@/app/provider';
 import { siteConfig } from '@/constant/config';
@@ -51,17 +55,22 @@ export const metadata: Metadata = {
   // ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
     <html>
-      <body lang='en' suppressHydrationWarning>
+      <body lang={locale} suppressHydrationWarning>
         <NextTopLoader color='var(--color-primary-700)' />
-        <Toaster />
-        <Providers>{children}</Providers>
+        <NextIntlClientProvider messages={messages}>
+          <Toaster />
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

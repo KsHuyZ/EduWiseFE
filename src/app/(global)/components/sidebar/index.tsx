@@ -1,12 +1,17 @@
 import Link from 'next/link';
 import React from 'react';
 
+import { getCookies } from '@/lib/action';
+
 import NextImage from '@/components/NextImage';
 import { Label } from '@/components/ui/label';
 
 import { SidebarRoutes } from '@/app/(global)/components/sidebar/components/sidebar-routes';
 
+import { TUser } from '@/types';
+
 const Sidebar = () => {
+  const user = getCookies('user') as TUser;
   return (
     <div className='h-full border-r flex flex-col overflow-y-auto bg-background shadow-sm'>
       <div className='p-6'>
@@ -25,7 +30,7 @@ const Sidebar = () => {
         </Link>
       </div>
       <div className='flex flex-col w-full'>
-        <SidebarRoutes />
+        <SidebarRoutes user={user} />
       </div>
     </div>
   );
