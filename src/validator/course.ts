@@ -1,13 +1,5 @@
 import { z } from 'zod';
 
-const MAX_FILE_SIZE = 2000000000;
-const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/webp',
-];
-
 const ACCEPTED_VIDEO_TYPES = [
   'video/mp4',
   'video/webm',
