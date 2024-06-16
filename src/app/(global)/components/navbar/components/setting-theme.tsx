@@ -39,7 +39,9 @@ const SettingTheme = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Settings className='animate-spin-slow cursor-pointer text-gray-500' />
+        <div>
+          <Settings className='animate-spin-slow cursor-pointer text-gray-500' />
+        </div>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader className='border-b pb-6 border-dashed'>
