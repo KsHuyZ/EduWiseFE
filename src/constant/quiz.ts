@@ -1,6 +1,6 @@
-import { TQuestion } from '@/types';
+import { TQuestionCredential } from '@/types';
 
-export const initialQuestions: TQuestion[] = [
+export const initialQuestions: TQuestionCredential[] = [
   {
     content: '',
     level: 1,
