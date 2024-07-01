@@ -1,10 +1,8 @@
 'use client';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { zodResolver } from '@hookform/resolvers/zod';
 import dynamic from 'next/dynamic';
 import { useParams, useRouter } from 'next/navigation';
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useDebounce } from '@/hooks';
@@ -33,15 +31,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 
+import { useCourseForm } from '@/app/(global)/teacher/courses/(modification-course)/_provider';
 import {
   useCategory,
   useModificationCourse,
   useTag,
 } from '@/app/(global)/teacher/courses/(modification-course)/create/_hook';
-import { useCourseInfo } from '@/app/(global)/teacher/courses/(modification-course)/edit/info/[id]/hooks';
-import { courseInitialValues, levelOptions } from '@/constant';
+import { levelOptions } from '@/constant';
 import { validateError } from '@/utils';
 import { courseInfoSchema } from '@/validator';
 
@@ -56,7 +55,6 @@ const CreateForm = () => {
   const { id } = useParams<{ id: string }>();
   const [inputTagValue, setInputTagValue] = useState('');
   const [inputCategoryValue, setInputCategoryValue] = useState('');
-  const [isPay, setIsPay] = useState(false);
   const debouncedTagInput = useDebounce(inputTagValue, 500);
   const debouncedCategoryInput = useDebounce(inputCategoryValue, 500);
   const { data: tags, isLoading: tagLoading } = useTag(debouncedTagInput);
@@ -67,12 +65,8 @@ const CreateForm = () => {
   const { isPending, mutateAsync: modificationCourse } =
     useModificationCourse(id);
   const router = useRouter();
-  const form = useForm<z.infer<typeof courseInfoSchema>>({
-    resolver: zodResolver(courseInfoSchema),
-    defaultValues: courseInitialValues,
-  });
-  const { data, isLoading } = useCourseInfo(id as string);
-
+  const { formInfo, courseLoading, course } = useCourseForm();
+  const [isPay, setIsPay] = useState(false);
   const onSubmit = async (values: z.infer<typeof courseInfoSchema>) => {
     try {
       const result = await modificationCourse({ ...values, id });
@@ -87,51 +81,42 @@ const CreateForm = () => {
   };
 
   const handleEditorChange = (_: unknown, editor: ClassicEditor) => {
-    form.setValue('description', editor.getData());
+    formInfo.setValue('description', editor.getData());
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.currentTarget.files?.[0];
     if (file) {
-      form.setValue('file', file);
+      formInfo.setValue('file', file);
     }
   };
   const onClearImage = () => {
-    form.setValue('file', null);
+    formInfo.setValue('file', null);
   };
 
   useEffect(() => {
-    if (id && data) {
-      const { file, name, price, description, tags, categories } = data;
-      form.reset({
-        name,
-        price,
-        description,
-        tags,
-        categories,
-        file,
-      });
-      if (price > 0) {
+    if (course) {
+      if (course.price > 0) {
         setIsPay(true);
       }
     }
-  }, [id, data]);
+  }, [course]);
 
   return (
     <div className='relative'>
-      {isLoading && (
+      {courseLoading && (
         <div className='absolute w-full h-full bg-background/80 backdrop-blur-sm z-50 flex justify-center items-center'>
           <Spinner />
         </div>
       )}
-      <Form {...form}>
+      <Form {...formInfo}>
         <form
           className='py-3 space-y-4 overflow-y-scroll h-[350px]'
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={formInfo.handleSubmit(onSubmit)}
         >
           <div className='grid grid-cols-1 space-y-2 gap-1 lg:grid-cols-2 lg:gap-3 lg:space-y-0'>
             <FormField
-              control={form.control}
+              control={formInfo.control}
               name='name'
               render={({ field }) => (
                 <FormItem>
@@ -150,7 +135,7 @@ const CreateForm = () => {
               )}
             />
             <FormField
-              control={form.control}
+              control={formInfo.control}
               name='level'
               render={({ field }) => (
                 <FormItem>
@@ -181,7 +166,7 @@ const CreateForm = () => {
           </div>
           <div className='grid grid-cols-1 space-y-2 gap-1 lg:grid-cols-2 lg:gap-3 lg:space-y-0'>
             <FormField
-              control={form.control}
+              control={formInfo.control}
               name='tags'
               render={({ field }) => (
                 <FormItem>
@@ -200,7 +185,7 @@ const CreateForm = () => {
                           name: debouncedTagInput,
                         },
                       ]}
-                      onChange={(value) => form.setValue('tags', value)}
+                      onChange={(value) => formInfo.setValue('tags', value)}
                       loading={tagLoading}
                       placeholder='Eg: React, Nextjs,...'
                     />
@@ -210,7 +195,7 @@ const CreateForm = () => {
               )}
             />
             <FormField
-              control={form.control}
+              control={formInfo.control}
               name='categories'
               render={({ field }) => (
                 <FormItem>
@@ -229,7 +214,9 @@ const CreateForm = () => {
                           name: debouncedCategoryInput,
                         },
                       ]}
-                      onChange={(value) => form.setValue('categories', value)}
+                      onChange={(value) =>
+                        formInfo.setValue('categories', value)
+                      }
                       loading={categoryLoading}
                       placeholder='Eg: Frontend, Backend,...'
                     />
@@ -248,7 +235,10 @@ const CreateForm = () => {
                 <Checkbox
                   id='free'
                   checked={!isPay}
-                  onClick={() => setIsPay(!isPay)}
+                  onClick={() => {
+                    setIsPay(!isPay);
+                    formInfo.setValue('price', 0);
+                  }}
                 />
                 <Label>Free</Label>
               </div>
@@ -262,24 +252,10 @@ const CreateForm = () => {
               </div>
             </div>
           </div>
-          <div className='flex flex-col space-y-4'>
-            <Label>
-              Certificate <span className='text-red-600'>*</span>
-            </Label>
-            <div className='flex space-x-3'>
-              <Checkbox
-                id='free'
-                checked={!isPay}
-                onClick={() => setIsPay(!isPay)}
-              />
-              <Label>Free</Label>
-            </div>
-          </div>
-
           {isPay ? (
             <div className='grid grid-cols-2 gap-3'>
               <FormField
-                control={form.control}
+                control={formInfo.control}
                 name='price'
                 render={({ field }) => (
                   <FormItem>
@@ -292,7 +268,7 @@ const CreateForm = () => {
                         type='number'
                         {...field}
                         onChange={(e) =>
-                          form.setValue('price', Number(e.target.value))
+                          formInfo.setValue('price', Number(e.target.value))
                         }
                         disabled={isPending}
                       />
@@ -302,7 +278,7 @@ const CreateForm = () => {
                 )}
               />
               <FormField
-                control={form.control}
+                control={formInfo.control}
                 name='discount'
                 render={({ field }) => (
                   <FormItem>
@@ -313,7 +289,7 @@ const CreateForm = () => {
                         type='number'
                         {...field}
                         onChange={(e) =>
-                          form.setValue('discount', Number(e.target.value))
+                          formInfo.setValue('discount', Number(e.target.value))
                         }
                         disabled={isPending}
                       />
@@ -326,15 +302,14 @@ const CreateForm = () => {
           ) : null}
 
           <FormField
-            control={form.control}
-            name='short_description'
+            control={formInfo.control}
+            name='descriptionShort'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Short Description</FormLabel>
                 <FormControl>
-                  <Input
+                  <Textarea
                     placeholder='Short description'
-                    className='h-32'
                     {...field}
                     disabled={isPending}
                   />
@@ -346,7 +321,7 @@ const CreateForm = () => {
 
           <div className='w-full'>
             <FormField
-              control={form.control}
+              control={formInfo.control}
               name='description'
               render={({ field }) => (
                 <FormItem>
@@ -365,7 +340,7 @@ const CreateForm = () => {
             />
           </div>
           <FormField
-            control={form.control}
+            control={formInfo.control}
             name='file'
             render={({ field }) => (
               <FormItem className='w-full'>

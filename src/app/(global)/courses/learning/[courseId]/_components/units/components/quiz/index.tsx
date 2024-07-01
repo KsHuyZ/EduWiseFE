@@ -1,6 +1,14 @@
 import { ChevronLeft, ChevronRight, Clock } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useCallback, useState } from 'react';
+import React, {
+  Dispatch,
+  memo,
+  SetStateAction,
+  useCallback,
+  useState,
+} from 'react';
+
+import { useWindowDimensions } from '@/hooks';
 
 import {
   AlertDialog,
@@ -16,29 +24,40 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
-import { useQuestion } from '@/app/(global)/_hooks';
 import CountdownTime from '@/app/(global)/courses/learning/[courseId]/_components/units/components/quiz/components/countdown-time';
 
-import { TQuestionResults, TUnit } from '@/types';
+import { TChoice, TQuestionResponse, TQuestionResults, TUnit } from '@/types';
 
 interface IQuizProps {
+  questions?: TQuestionResponse[];
+  isLoading: boolean;
+  questionResultList: TQuestionResults[];
   selectUnit?: TUnit;
+  currentIndex: number;
+  setCurrentIndex: Dispatch<SetStateAction<number>>;
+  onAddQuestionList: (question: TQuestionResponse, choice: TChoice) => void;
+  mutateAsync: (values: {
+    quizId: string;
+    questionResultRequestList: TQuestionResults[];
+  }) => Promise<void>;
+  isPending: boolean;
 }
 
-const Quiz = ({ selectUnit }: IQuizProps) => {
+const Quiz = ({
+  questions,
+  isLoading,
+  questionResultList,
+  onAddQuestionList,
+  currentIndex,
+  selectUnit,
+  setCurrentIndex,
+  mutateAsync,
+  isPending,
+}: IQuizProps) => {
   const [open, setOpen] = useState(false);
   const searchParams = useSearchParams();
   const pathName = usePathname();
   const { replace } = useRouter();
-  const [currentIndex, setCurrentIndex] = useState(
-    Number(searchParams.get('question')) ?? 0
-  );
-  const [questionResultList, setQuestionResultList] =
-    useState<TQuestionResults[]>();
-  const { data, isLoading } = useQuestion(
-    selectUnit?.quizResponse?.id,
-    selectUnit?.type
-  );
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -53,7 +72,13 @@ const Quiz = ({ selectUnit }: IQuizProps) => {
     [pathName, replace, searchParams]
   );
 
-  const handleAddQuestionList = () => {};
+  const onChangeQuiz = useCallback(
+    (next: number) => {
+      createQueryString('question', (currentIndex + next).toString());
+      setCurrentIndex(currentIndex + next);
+    },
+    [currentIndex, createQueryString, setCurrentIndex]
+  );
 
   return (
     <>
@@ -85,14 +110,28 @@ const Quiz = ({ selectUnit }: IQuizProps) => {
                   {isLoading ? (
                     <Skeleton className='w-48 h-4' />
                   ) : (
-                    <CountdownTime totalSeconds={3600} />
+                    <CountdownTime
+                      totalSeconds={
+                        Number(selectUnit?.quizResponse?.time) * 60 ?? 3600
+                      }
+                    />
                   )}
                 </div>
               </div>
               {isLoading ? (
                 <Skeleton className='w-24 h-10' />
               ) : (
-                <Button onClick={() => setOpen(true)}>Submit</Button>
+                <Button
+                  onClick={() =>
+                    mutateAsync({
+                      quizId: selectUnit?.quizResponse?.id ?? '',
+                      questionResultRequestList: questionResultList,
+                    })
+                  }
+                  isLoading={isPending}
+                >
+                  Submit
+                </Button>
               )}
             </div>
             <div className='grid grid-cols-3 gap-3'>
@@ -102,7 +141,7 @@ const Quiz = ({ selectUnit }: IQuizProps) => {
                     <Skeleton className='w-48 h-4' />
                   ) : (
                     <span className='text-sm font-bold'>
-                      Question {currentIndex + 1} of {data?.length}
+                      Question {currentIndex + 1} of {questions?.length}
                     </span>
                   )}
                   <p className='text-xl font-bold'>
@@ -114,21 +153,30 @@ const Quiz = ({ selectUnit }: IQuizProps) => {
                         <Skeleton className='w-96 h-4' />
                       </div>
                     ) : (
-                      data && data[currentIndex].content
+                      questions && questions[currentIndex].content
                     )}
                   </p>
                 </div>
                 <div className='grid grid-cols-2 gap-4'>
-                  {isLoading && !data
+                  {isLoading && !questions
                     ? Array.from({ length: 4 }).map((_, index) => (
                         <Skeleton key={index} className='w-48 h-10' />
                       ))
-                    : data &&
-                      data[currentIndex].choiceResponses.map((choice) => (
+                    : questions &&
+                      questions[currentIndex].choiceResponses.map((choice) => (
                         <Button
                           key={choice.content}
-                          variant={!choice.correct ? 'outline' : 'default'}
-                          // onClick={() => }
+                          variant={
+                            questionResultList.find(
+                              (question) =>
+                                question.answerResults[0].answerId === choice.id
+                            )
+                              ? 'default'
+                              : 'outline'
+                          }
+                          onClick={() =>
+                            onAddQuestionList(questions[currentIndex], choice)
+                          }
                         >
                           {choice.content}
                         </Button>
@@ -161,13 +209,20 @@ const Quiz = ({ selectUnit }: IQuizProps) => {
                         className='stroke-current text-primary-600 duration-300'
                         stroke-width='2'
                         stroke-dasharray='100'
-                        stroke-dashoffset='60'
+                        stroke-dashoffset={
+                          100 -
+                          (questionResultList.length /
+                            Number(questions?.length) ?? 1) *
+                            100
+                        }
+                        stroke='currentColor'
+                        stroke-linecap='round'
                       ></circle>
                     </g>
                   </svg>
                   <div className='absolute top-1/2 start-1/2 transform -translate-y-1/2 -translate-x-1/2'>
                     <span className='text-center text-2xl font-bold text-gray-800 dark:text-white'>
-                      72%
+                      {questionResultList.length} / {questions?.length}
                     </span>
                   </div>
                 </div>
@@ -178,12 +233,14 @@ const Quiz = ({ selectUnit }: IQuizProps) => {
                 leftIcon={ChevronLeft}
                 variant='outline'
                 disabled={currentIndex === 0}
+                onClick={() => onChangeQuiz(-1)}
               >
                 Back
               </Button>
               <Button
                 rightIcon={ChevronRight}
-                disabled={currentIndex === Number(data?.length) - 1}
+                disabled={currentIndex === Number(questions?.length) - 1}
+                onClick={() => onChangeQuiz(1)}
               >
                 Next
               </Button>
@@ -195,4 +252,4 @@ const Quiz = ({ selectUnit }: IQuizProps) => {
   );
 };
 
-export default Quiz;
+export default memo(Quiz);

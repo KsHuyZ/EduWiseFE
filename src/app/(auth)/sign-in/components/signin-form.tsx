@@ -1,7 +1,8 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useGoogleLogin } from '@react-oauth/google';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -22,7 +23,7 @@ import {
 import { useSignIn } from '@/app/(auth)/sign-in/_hooks';
 import { signInSchema } from '@/validator';
 
-import { TSignInCredentials } from '@/types';
+import { ERoles, TSignInCredentials } from '@/types';
 
 const SignInForm = () => {
   const router = useRouter();
@@ -31,12 +32,21 @@ const SignInForm = () => {
   const form = useForm<TSignInCredentials>({
     resolver: zodResolver(signInSchema),
   });
-
+  const searchParams = useSearchParams();
   const onSubmit = async (values: TSignInCredentials) => {
     const result = await signIn(values);
     const { token, refreshToken, userResponse } = result;
     await setCookies('user', userResponse);
     await setCookies('token', { token, refreshToken });
+    const callBack = searchParams.get('callBack');
+    if (callBack) {
+      router.replace(callBack);
+      return;
+    }
+    if (userResponse.roles.includes(ERoles.TEACHER)) {
+      router.replace('/teacher');
+      return;
+    }
     router.replace(`/`);
   };
 
@@ -56,13 +66,13 @@ const SignInForm = () => {
       }
     }
   }, [error, form]);
-
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => console.log(codeResponse),
+    onError: (error) => console.log('Login Failed:', error),
+  });
   return (
     <Form {...form}>
-      <form
-        className='space-y-4 md:space-y-6'
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
+      <form className='space-y-4' onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name='email'
@@ -73,7 +83,6 @@ const SignInForm = () => {
                 <Input
                   placeholder='name@name.com'
                   type='email'
-                  required
                   error={form.formState.errors.email}
                   {...field}
                 />
@@ -92,7 +101,6 @@ const SignInForm = () => {
                 <Input
                   placeholder='••••••••'
                   type='password'
-                  required
                   error={form.formState.errors.password}
                   {...field}
                 />
@@ -125,12 +133,27 @@ const SignInForm = () => {
         >
           Sign in
         </Button>
-        <a
-          href='#'
-          className='text-sm font-medium text-primary-600 hover:underline dark:text-primary-500'
+        <div className='relative'>
+          <div className='absolute inset-0 flex items-center'>
+            <div className='border-gray-200 border-opacity border-t w-full' />
+          </div>
+          <div className='leading-6 font-medium text-sm justify-center flex relative'>
+            <span className='px-4 bg-background text-gray-400'>
+              Or continue with
+            </span>
+          </div>
+        </div>
+        <Button
+          type='button'
+          variant='outline'
+          className='w-full'
+          onClick={() => login()}
         >
-          Forgot password?
-        </a>
+          <div className='flex space-x-2 items-center w-full justify-center'>
+            <img src='/images/google.svg' className='w-4 h-4' />{' '}
+            <span>Sign in with google</span>
+          </div>
+        </Button>
         <p className='text-sm font-light text-gray-500 dark:text-gray-400'>
           Don’t have an account yet?{' '}
           <Link

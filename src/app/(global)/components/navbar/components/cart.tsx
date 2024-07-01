@@ -15,6 +15,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { useUserCart } from '@/app/(global)/_hooks';
+import { formatPrice } from '@/utils';
 
 const Cart = () => {
   const { data, isLoading } = useUserCart();
@@ -66,15 +67,20 @@ const Cart = () => {
                   >
                     <div className='flex items-center space-x-2'>
                       <Image
-                        src='/images/spider.jpg'
+                        src={item.courseResponse.file.url}
                         width={100}
                         height={100}
                         alt='COurse img'
                         className='rounded-md overflow-hidden'
                       />
                       <div className='flex flex-col space-y-2'>
-                        <Label className='line-clamp-1'>{item.name}</Label>
-                        <span>Phan Tien huy</span>
+                        <Label className='line-clamp-1'>
+                          {item.courseResponse.name}
+                        </Label>
+                        <span>
+                          {item.userResponse.firstName}{' '}
+                          {item.userResponse.lastName}
+                        </span>
                       </div>
                     </div>
                     <Button variant='ghost'>
@@ -92,7 +98,13 @@ const Cart = () => {
               <Label>Total:</Label>
               <span className='text-2xl text-bold'>
                 {data && data.length > 0
-                  ? data.reduce((current, course) => course.price + current, 0)
+                  ? formatPrice(
+                      data.reduce(
+                        (current, course) =>
+                          course.courseResponse.price + current,
+                        0
+                      )
+                    )
                   : '0đ'}
               </span>
             </div>

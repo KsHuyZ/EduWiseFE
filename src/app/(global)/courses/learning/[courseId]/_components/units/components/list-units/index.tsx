@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import {
   BookOpen,
   ChevronDown,
@@ -6,13 +7,32 @@ import {
   StickyNote,
 } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { Dispatch, memo, SetStateAction, useCallback } from 'react';
+import React, {
+  Dispatch,
+  memo,
+  SetStateAction,
+  useCallback,
+  useState,
+} from 'react';
 
 import { cn } from '@/lib/utils';
 
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
+
+import abi from '@/abi/contract.json';
+import { useCourseProgress } from '@/app/(global)/courses/learning/[courseId]/_components/units/components/list-units/hooks';
 
 import { EUnitType, Lesson, TUnit } from '@/types';
 
@@ -22,6 +42,18 @@ interface IListUnitsProps {
   currentLesson: string[];
   setCurrentLesson: Dispatch<SetStateAction<string[]>>;
   selectUnit?: TUnit;
+  id: string;
+}
+
+const PRIVATE_KEY =
+  '780999a084b8673834d7e8288c49ea1df52def69ea0890641f0a973a97b22d73';
+const CONTRACT_ADDRESS = '0xC2ff420BAED2f1976e9eA581ce3c25E1551deC23';
+
+function getContract(signer: any) {
+  return new ethers.Contract(CONTRACT_ADDRESS, abi, signer);
+}
+function getSigner() {
+  return new ethers.Wallet(PRIVATE_KEY, provider);
 }
 
 const ListUnits = ({
@@ -30,10 +62,16 @@ const ListUnits = ({
   currentLesson,
   setCurrentLesson,
   selectUnit,
+  id,
 }: IListUnitsProps) => {
   const searchParams = useSearchParams();
   const pathName = usePathname();
   const { replace } = useRouter();
+  const { data: progress, isLoading: progressLoading } = useCourseProgress(id);
+  const [open, setOpen] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [currentUnit, setCurrentUnit] = useState<string | undefined>(undefined);
+  const [defaultAccount, setDefaultAccount] = useState<null | string>(null);
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -49,10 +87,88 @@ const ListUnits = ({
   );
 
   const onSelectUnit = (unit: TUnit) => {
+    if (unit.type === EUnitType.QUIZ) {
+      if (unit.quizResponse?.finalExam) {
+        setOpenAlert(true);
+        setCurrentUnit(unit.id);
+        return;
+      }
+      setOpen(true);
+      setCurrentUnit(unit.id);
+      return;
+    }
     createQueryString('unitId', unit.id);
   };
+
+  const accountChangedHandler = async (newAccount: ethers.JsonRpcSigner) => {
+    const address = await newAccount.getAddress();
+    setDefaultAccount(address);
+  };
+
+  async function transferTokens(to: string, amount: number) {
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
+  }
+
+  const onConnect = async () => {
+    if (!window.ethereum) {
+      location.replace('https://metamask.io/download/');
+    }
+    await window.ethereum.enable();
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    await provider.send('eth_requestAccounts', []);
+    await accountChangedHandler(signer);
+    setOpenAlert(false);
+    createQueryString('unitId', currentUnit);
+    setCurrentUnit(undefined);
+  };
+
+  const onStartQuiz = () => {
+    if (currentUnit) {
+      createQueryString('unitId', currentUnit);
+      setCurrentUnit(undefined);
+      setOpen(true);
+    }
+  };
+
   return (
     <div>
+      <AlertDialog open={openAlert} onOpenChange={setOpenAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you ready for final test?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Remember that you just have one opportunity, And you need to
+              install and connect to metamask wallet, cause we save your result
+              to sepolia network
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <div className='flex space-x-2'>
+              <Button onClick={onConnect}>
+                {window.ethereum ? 'Connect' : 'Download'}
+              </Button>
+            </div>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you ready for test</AlertDialogTitle>
+            <AlertDialogDescription>
+              When you press start, the quiz time count will start and can not
+              cancel
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <Button onClick={onStartQuiz}>Start</Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <CardHeader>
         <CardTitle>Course Content</CardTitle>
         <div className='flex flex-col space-y-4'>

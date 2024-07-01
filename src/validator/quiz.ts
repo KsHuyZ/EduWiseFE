@@ -28,4 +28,5 @@ export const quizGroupSchema = z.object({
     })
     .trim(),
   isFinalExam: z.boolean(),
+  time: z.date(),
 });

@@ -56,7 +56,7 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [open, setOpen] = useState(false);
   const [currentLesson, setCurrentLesson] = useState<Lesson | undefined>();
-  const { data: lessons, isLoading, refetch } = useLessons(idCourse);
+  const { data: lessons, isLoading } = useLessons(idCourse);
   const { isPending, mutateAsync: modificationLesson } = useModificationLesson(
     idCourse!,
     currentLesson?.id
@@ -81,6 +81,7 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(currentLesson);
     if (idCourse) {
       const lessonValues = currentLesson
         ? { ...values, id: currentLesson.id }
@@ -160,7 +161,7 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
           </Form>
         </DialogContent>
       </Dialog>
-      <div className='relative p-4'>
+      <div className='relative p-4 overflow-y-scroll h-[300px]'>
         {isUpdating && (
           <div className='absolute h-full w-full bg-slate-500/20 top-0 right-0 rounded-m flex items-center justify-center'>
             <Loader2 className='animate-spin h-6 w-6 text-sky-700' />

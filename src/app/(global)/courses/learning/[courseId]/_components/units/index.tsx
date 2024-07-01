@@ -1,7 +1,7 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import Spinner from '@/components/loading/spinner';
 import {
@@ -14,19 +14,38 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 
+import { useQuestion } from '@/app/(global)/_hooks';
 import { useLessonList } from '@/app/(global)/courses/_hooks';
 import ListUnits from '@/app/(global)/courses/learning/[courseId]/_components/units/components/list-units';
 import Quiz from '@/app/(global)/courses/learning/[courseId]/_components/units/components/quiz';
+import { useSubmitQuiz } from '@/app/(global)/courses/learning/[courseId]/_components/units/components/quiz/hooks';
 import Video from '@/app/(global)/courses/learning/[courseId]/_components/units/components/video';
 
-import { EUnitType, TUnit } from '@/types';
+import {
+  EUnitType,
+  TChoice,
+  TQuestionResponse,
+  TQuestionResults,
+  TUnit,
+} from '@/types';
 
 interface CourseVideoProps {
   id: string;
 }
+
+const defaultOptions = {
+  loop: false,
+  autoplay: true,
+  animationData: require('@/assets/json/confetti.json'),
+  rendererSettings: {
+    preserveAspectRatio: 'xMidYMid slice',
+  },
+};
 
 const CourseVideo = ({ id }: CourseVideoProps) => {
   const { data, isLoading } = useLessonList(id);
@@ -34,6 +53,84 @@ const CourseVideo = ({ id }: CourseVideoProps) => {
   const [selectUnit, setSelectUnit] = useState<TUnit | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const searchParams = useSearchParams();
+  const [questionResultList, setQuestionResultList] = useState<
+    TQuestionResults[]
+  >([]);
+  const { data: questions, isLoading: questionLoading } = useQuestion(
+    selectUnit?.quizResponse?.id,
+    selectUnit?.type
+  );
+  const pathName = usePathname();
+  const { replace } = useRouter();
+  const { mutateAsync, isPending } = useSubmitQuiz();
+  const [finalResult, setFinalResult] = useState<
+    { score: string; isFinal: boolean; isPass: boolean } | undefined
+  >(undefined);
+  const [currentIndex, setCurrentIndex] = useState(
+    Number(searchParams.get('question')) ?? 0
+  );
+
+  const onAddQuestionList = useCallback(
+    (question: TQuestionResponse, choice: TChoice) => {
+      setQuestionResultList((prev) => {
+        const tempQuestionList = [...prev];
+        const isQuestionExist = prev.find((q) => q.questionId === question.id);
+
+        if (isQuestionExist) {
+          if (isQuestionExist.answerResults[0].answerId === choice.id) {
+            return tempQuestionList.filter((q) => q.questionId !== question.id);
+          }
+          return tempQuestionList.map((question) => {
+            if (isQuestionExist.questionId === question.questionId) {
+              return {
+                ...question,
+                answerResults: [{ answerId: choice.id }],
+              };
+            }
+            return question;
+          });
+        }
+        const newQuestion: TQuestionResults = {
+          questionId: question.id ?? '',
+          answerResults: [{ answerId: choice.id ?? '' }],
+        };
+        return [...tempQuestionList, newQuestion];
+      });
+    },
+    [setQuestionResultList]
+  );
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams);
+      if (value) {
+        params.set(name, value);
+      } else {
+        params.delete(name);
+      }
+      return replace(`${pathName}?${params.toString()}`);
+    },
+    [pathName, replace, searchParams]
+  );
+
+  const handleSubmit = async (values: {
+    quizId: string;
+    questionResultRequestList: TQuestionResults[];
+  }) => {
+    const result = await mutateAsync({ ...values });
+    if (!result.isFinal) {
+      setFinalResult(result);
+      return;
+    }
+  };
+
+  const onSelectIndex = useCallback(
+    (index: number) => {
+      createQueryString('question', index.toString());
+      setCurrentIndex(index);
+    },
+    [createQueryString, setCurrentIndex]
+  );
 
   useEffect(() => {
     if (data && !isLoading) {
@@ -53,6 +150,20 @@ const CourseVideo = ({ id }: CourseVideoProps) => {
       }
     }
   }, [data, isLoading, searchParams]);
+
+  const handleContinueLearning = () => {
+    if (data) {
+      data.forEach((lesson) =>
+        lesson.units.forEach((unit, index) => {
+          if (unit.id === selectUnit?.id && lesson.units.length - 1 < index) {
+            setSelectUnit(lesson.units[index]);
+          }
+        })
+      );
+      setSelectUnit(data[0].units[0]);
+    }
+    setFinalResult(undefined);
+  };
 
   return (
     <>
@@ -83,28 +194,95 @@ const CourseVideo = ({ id }: CourseVideoProps) => {
                 )}
               </Label>
             </div>
-            <div className='grid grid-cols-4 gap-2 items-stretch overflow-scroll no-scrollbar mt-5'>
-              <div className='col-span-3'>
-                {data && selectUnit ? (
-                  selectUnit.type === EUnitType.VIDEO ? (
-                    <Video selectUnit={selectUnit} />
+            {finalResult ? (
+              <>
+                <Card>
+                  <CardHeader></CardHeader>
+                  <CardContent>
+                    <div className='flex flex-col space-y-4 items-center w-full'>
+                      <Label className='text-xl font-bold'>
+                        You are competed this test with
+                      </Label>
+                      <Label className='text-2xl font-bold text-primary-600'>
+                        {finalResult.score}
+                      </Label>
+                      <Button onClick={handleContinueLearning}>
+                        Continue learning
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
+            ) : (
+              <div className='grid grid-cols-4 gap-2 items-stretch overflow-scroll no-scrollbar mt-5'>
+                <div className='col-span-3'>
+                  {data && selectUnit ? (
+                    selectUnit.type === EUnitType.VIDEO ? (
+                      <Video selectUnit={selectUnit} />
+                    ) : (
+                      <Quiz
+                        questions={questions}
+                        isLoading={questionLoading}
+                        questionResultList={questionResultList}
+                        onAddQuestionList={onAddQuestionList}
+                        currentIndex={currentIndex}
+                        setCurrentIndex={setCurrentIndex}
+                        selectUnit={selectUnit}
+                        mutateAsync={handleSubmit}
+                        isPending={isPending}
+                      />
+                    )
                   ) : (
-                    <Quiz selectUnit={selectUnit} />
+                    <div className='w-full h-96 flex items-center justify-center'>
+                      <Spinner />
+                    </div>
+                  )}
+                </div>
+                {selectUnit ? (
+                  selectUnit.type === EUnitType.QUIZ ? (
+                    <Card className='border rounded-md'>
+                      <CardHeader>
+                        <CardTitle>Quiz list</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className='grid grid-cols-4 gap-4'>
+                          {questionLoading && !questions
+                            ? Array.from({ length: 12 }).map((_, index) => (
+                                <Skeleton className='w-24 h-4' key={index} />
+                              ))
+                            : questions &&
+                              questions.map((q, i) => (
+                                <Button
+                                  variant={
+                                    questionResultList.find(
+                                      (question) => question.questionId === q.id
+                                    )
+                                      ? 'default'
+                                      : 'outline'
+                                  }
+                                  key={i}
+                                  onClick={() => onSelectIndex(i)}
+                                >
+                                  {i < 10 ? 0 : ''}
+                                  {i + 1}
+                                </Button>
+                              ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <ListUnits
+                      data={data}
+                      isLoading={isLoading}
+                      currentLesson={currentLesson}
+                      setCurrentLesson={setCurrentLesson}
+                      selectUnit={selectUnit}
+                      id={id}
+                    />
                   )
-                ) : (
-                  <div className='w-full h-96 flex items-center justify-center'>
-                    <Spinner />
-                  </div>
-                )}
+                ) : null}
               </div>
-              <ListUnits
-                data={data}
-                isLoading={isLoading}
-                currentLesson={currentLesson}
-                setCurrentLesson={setCurrentLesson}
-                selectUnit={selectUnit}
-              />
-            </div>
+            )}
           </div>
         </div>
 

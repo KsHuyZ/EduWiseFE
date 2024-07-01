@@ -4,6 +4,7 @@ export * from './category';
 export * from './course';
 export * from './enroll';
 export * from './payment';
+export * from './progress';
 export * from './quiz';
 export * from './tag';
 export * from './user';

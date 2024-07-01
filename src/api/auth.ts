@@ -8,6 +8,7 @@ export const refreshToken = (
   axios.post('/auth/refresh', `Bearer ${refreshToken}`, {
     headers: {
       'Content-Type': 'application/json',
+      Authorization: '',
     },
   });
 

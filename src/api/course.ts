@@ -3,6 +3,7 @@ import axios from '@/lib/axios';
 import {
   CourseCredentials,
   CourseType,
+  ECourseStatus,
   ICategory,
   Lesson,
   LessonCredentials,
@@ -57,16 +58,15 @@ export const updateCourses = (
 
 export const getCourses = (
   sort: string | null,
-  priceMin: string | null,
-  priceMax: string | null,
+  priceMin = 0,
+  priceMax = 1000000000,
   keyword: string | null
 ): Promise<TableApiResponse<CourseType[]>> =>
   axios.get('/course/get-all', {
     params: {
       sort,
-      priceMin,
-      priceMax,
-      keyword,
+      priceMin: 0,
+      priceMax: 10000000000,
     },
   });
 
@@ -112,3 +112,6 @@ export const createVideo = (video: TVideoCredentials) => {
 
 export const getMyCourse = (): Promise<CourseType[]> =>
   axios.get('/course/get-by-user');
+
+export const changeCourseStatus = (id: string, status: ECourseStatus) =>
+  axios.post(`/course/update-status-by-teacher?id=${id}&status=${status}`);
