@@ -1,5 +1,6 @@
 'use client';
 import {
+  Award,
   BarChart,
   Clock,
   Compass,
@@ -79,6 +80,11 @@ export const SidebarRoutes = ({ user }: ISidebarProps) => {
       icon: Compass,
       label: 'Browse',
       href: '/search',
+    },
+    {
+      icon: Award,
+      label: 'Certificate',
+      href: '/certificate',
     },
   ];
   const pathname = usePathname();

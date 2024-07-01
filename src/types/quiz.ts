@@ -1,9 +1,11 @@
 export type TChoice = {
+  id?: string;
   content: string;
   correct: boolean;
 };
 
 export type TQuestion = {
+  id?: string;
   content: string;
   description: string;
   level: number;
@@ -34,7 +36,9 @@ export type TQuizCredentials = {
   description: string;
   idLesson: string;
   isFinalExam: boolean;
+  finalExam?: boolean;
   questions: TQuestion[];
+  time: number;
 };
 export type TQuiz = {
   id: string;

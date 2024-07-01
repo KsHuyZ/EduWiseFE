@@ -8,11 +8,16 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TableCell, TableRow } from '@/components/ui/table';
 
-import { useUserCart } from '@/app/(global)/_hooks';
 import { formatPrice } from '@/utils';
 
-const TableCart = () => {
-  const { data, isLoading } = useUserCart();
+import { TCartResponse } from '@/types';
+
+interface TableCartProps {
+  data?: TCartResponse[];
+  isLoading: boolean;
+}
+
+const TableCart = ({ data, isLoading }: TableCartProps) => {
   return isLoading ? (
     Array.from({ length: 5 }).map((_, index) => (
       <TableRow key={index} className='grid-cols-6 gap-2 items-center'>
@@ -47,23 +52,26 @@ const TableCart = () => {
           <div className='flex items-center justify-between cursor-pointer duration-200 p-2 rounded-sm'>
             <div className='flex items-center space-x-2'>
               <Image
-                src='/images/spider.jpg'
+                src={course.courseResponse.file.url}
                 width={100}
                 height={100}
                 alt='COurse img'
                 className='rounded-md overflow-hidden'
               />
               <div className='flex flex-col space-y-2'>
-                <Label>{course.name}</Label>
+                <Label>{course.courseResponse.name}</Label>
                 <div className='flex items-center space-x-2'>
                   <span>Author:</span>
-                  <span className='text-sm'>Phan Tiến Huy</span>
+                  <span className='text-sm'>
+                    {course.userResponse.firstName}{' '}
+                    {course.userResponse.lastName}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </TableCell>
-        <TableCell>{formatPrice(course.price)}</TableCell>
+        <TableCell>{formatPrice(course.courseResponse.price)}</TableCell>
         <TableCell>
           <Button variant='ghost'>
             <X size={15} className='text-gray-500' />

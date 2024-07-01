@@ -16,7 +16,7 @@ const MyCourse = () => {
 
   return (
     <>
-      {!isLoading && (!data || data.length) ? (
+      {!isLoading && (!data || data?.length === 0) ? (
         <div className='w-full h-full flex justify-center items-center'>
           <div className='flex flex-col space-y-4 items-center'>
             <Image

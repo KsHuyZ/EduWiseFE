@@ -1,7 +1,17 @@
+'use client';
 import React from 'react';
 
-const index = () => {
-  return <div></div>;
+import { Button } from '@/components/ui/button';
+
+import { useAddCart } from '@/app/(global)/courses/[courseId]/_components/add-cart/hooks';
+
+const AddCart = ({ id }: { id: string }) => {
+  const { mutateAsync, isPending } = useAddCart();
+  return (
+    <Button isLoading={isPending} onClick={() => mutateAsync(id)}>
+      Add to cart
+    </Button>
+  );
 };
 
-export default index;
+export default AddCart;

@@ -17,7 +17,7 @@ const realTimeLeft =
 
 const CountDownTime = ({ totalSeconds }: ICountDownTimeProps) => {
   const [timeLeft, setTimeLeft] = useState(
-    getStorage('time-left') ? realTimeLeft : totalSeconds
+    realTimeLeft >= 0 ? realTimeLeft : totalSeconds
   );
 
   useEffect(() => {

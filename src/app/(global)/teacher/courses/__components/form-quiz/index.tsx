@@ -1,5 +1,6 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { startOfDay } from 'date-fns';
 import { Plus, Trash } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
@@ -26,6 +27,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Label } from '@/components/ui/label';
+import { TimePickerDuration } from '@/components/ui/time-picker-duration';
 import { useToast } from '@/components/ui/use-toast';
 
 import Answers from '@/app/(global)/teacher/courses/__components/form-quiz/components/answers';
@@ -68,6 +70,7 @@ const FormQuiz = ({ lessonId }: FormQuizProps) => {
   });
   const { toast } = useToast();
   const { mutateAsync: createQuiz, isPending } = useCreateQuiz();
+
   const onSubmit = async () => {
     const isValid = await trigger();
     const isFormGroupValid = await formQuestionGroup.trigger();
@@ -81,9 +84,13 @@ const FormQuiz = ({ lessonId }: FormQuizProps) => {
     }
     const { questions } = getValues();
     const quizValues = formQuestionGroup.getValues();
+    const currentTime = quizValues.time;
+    const now = new Date();
+    const startOfToday = startOfDay(now);
+    const timeRemain = Number(currentTime) - Number(startOfToday);
+    const time = timeRemain / 60000;
     if (lessonId) {
-      await createQuiz({ ...quizValues, idLesson: lessonId, questions });
-      setOpen(false);
+      await createQuiz({ ...quizValues, time, questions, idLesson: lessonId });
     }
   };
 
@@ -144,7 +151,27 @@ const FormQuiz = ({ lessonId }: FormQuizProps) => {
                     </FormItem>
                   )}
                 />
-
+                <FormField
+                  control={formQuestionGroup.control}
+                  name='time'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Time duration</FormLabel>
+                      <FormControl>
+                        <TimePickerDuration
+                          date={field.value}
+                          setDate={(date) => {
+                            formQuestionGroup.setValue(
+                              'time',
+                              new Date(date as Date)
+                            );
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={formQuestionGroup.control}
                   name='isFinalExam'

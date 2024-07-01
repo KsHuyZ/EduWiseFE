@@ -1,4 +1,4 @@
-import { ICategory, ImageType, ITag, TQuiz } from '@/types';
+import { ICategory, ImageType, ITag, TQuiz, TUser } from '@/types';
 
 export type CourseCredentials = {
   id?: string;
@@ -20,8 +20,10 @@ export type CourseType = {
   description: string;
   file: ImageType;
   categories: ICategory[];
+  descriptionShort: string;
   tags: ITag[];
   chapters?: Lesson[];
+  userResponse: TUser;
 };
 
 export type TVideo = {
@@ -68,3 +70,10 @@ export type TVideoCredentials = {
   idLesson: string;
   description: string;
 };
+
+export enum ECourseStatus {
+  CREATE = 'on_create',
+  PUBLIC = 'public',
+  PRIVATE = 'private',
+  DELETE = 'delete',
+}

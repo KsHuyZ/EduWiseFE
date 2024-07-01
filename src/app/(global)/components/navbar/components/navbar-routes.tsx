@@ -3,7 +3,7 @@
 import { getCookie, setCookie } from 'cookies-next';
 import { LogIn, LogOutIcon, Settings } from 'lucide-react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
@@ -32,15 +32,14 @@ import {
 import Cart from '@/app/(global)/components/navbar/components/cart';
 import SettingTheme from '@/app/(global)/components/navbar/components/setting-theme';
 
-import { TUser } from '@/types';
+import { ERoles, TUser } from '@/types';
 
 const NavbarRoutes = ({ user }: { user?: TUser }) => {
   const [locale, setLocale] = useState(getCookie('NEXT_LOCALE') ?? 'en');
   const router = useRouter();
+  const pathName = usePathname();
   const t = useTranslations('head');
   const handleSignOut = async () => {
-    // await signOut();
-    await router.replace('/sign-in');
     await deleteCookie('user');
     await deleteCookie('token');
   };
@@ -86,9 +85,8 @@ const NavbarRoutes = ({ user }: { user?: TUser }) => {
             </SelectGroup>
           </SelectContent>
         </Select>
-        <Cart />
+        {user?.roles.includes(ERoles.STUDENT) && <Cart />}
         <SettingTheme />
-
         {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger>
@@ -118,7 +116,12 @@ const NavbarRoutes = ({ user }: { user?: TUser }) => {
                   <span>Setting</span>
                 </div>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleSignOut}>
+              <DropdownMenuItem
+                onClick={() => {
+                  handleSignOut();
+                  router.push(`/sign-in?callBack=${pathName}`);
+                }}
+              >
                 <div className='gap-x-2 flex items-center text-red-600'>
                   <LogOutIcon size={15} />
                   <span>Log out</span>

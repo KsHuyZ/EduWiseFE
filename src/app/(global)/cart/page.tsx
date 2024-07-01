@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 
 import Input from '@/components/inputs/Input';
@@ -12,11 +13,15 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+import { useUserCart } from '@/app/(global)/_hooks';
 import Payment from '@/app/(global)/cart/_components/payment';
 import TableCart from '@/app/(global)/cart/_components/table-cart';
+import { useBuyCart } from '@/app/(global)/cart/_hooks';
 import { formatPrice } from '@/utils';
 
 const Cart = () => {
+  const { data, isLoading } = useUserCart();
+
   return (
     <div className='flex flex-col space-y-4'>
       <div className='grid grid-cols-6 gap-2'>
@@ -31,7 +36,7 @@ const Cart = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableCart />
+                <TableCart data={data} isLoading={isLoading} />
               </TableBody>
             </Table>
           </CardContent>
@@ -58,7 +63,15 @@ const Cart = () => {
                 <div className='flex justify-between items-center'>
                   <span className='font-bold'>Cart Total</span>{' '}
                   <span className='text-xl font-bold'>
-                    {formatPrice(18000)}
+                    {data && data.length > 0
+                      ? formatPrice(
+                          data.reduce(
+                            (current, course) =>
+                              course.courseResponse.price + current,
+                            0
+                          )
+                        )
+                      : '0đ'}
                   </span>
                 </div>
               </div>

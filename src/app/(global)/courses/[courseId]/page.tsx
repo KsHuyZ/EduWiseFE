@@ -23,6 +23,7 @@ import { Separator } from '@/components/ui/separator';
 
 import { __mockReviews } from '@/__mocks__';
 import { getCourseById } from '@/api';
+import AddCart from '@/app/(global)/courses/[courseId]/_components/add-cart';
 import CourseList from '@/app/(global)/courses/[courseId]/_components/course-list';
 import Enroll from '@/app/(global)/courses/[courseId]/_components/enroll';
 import ModalPreview from '@/app/(global)/courses/[courseId]/_components/modal-preview';
@@ -71,12 +72,7 @@ const CourseIdPage = async ({ params: { courseId } }: Props) => {
                   <span className='text-white'>3000 students</span>
                 </div>
                 <div>
-                  <p className='text-white'>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Odit corrupti delectus dignissimos, nihil repudiandae
-                    excepturi soluta totam quas impedit in architecto dicta
-                    explicabo ullam hic quam unde expedita quis illum!
-                  </p>
+                  <p className='text-white'>{course.descriptionShort}</p>
                 </div>
                 <div className='flex items-center space-x-2'>
                   {course.tags.map((tag) => (
@@ -106,64 +102,6 @@ const CourseIdPage = async ({ params: { courseId } }: Props) => {
                 dangerouslySetInnerHTML={{ __html: course.description }}
               ></span>
             </div>
-            <div className='flex flex-col space-y-4'>
-              <h3>Reviews</h3>
-              <Carousel
-                opts={{
-                  align: 'start',
-                }}
-                className='w-full items-stretch'
-              >
-                <CarouselContent>
-                  {__mockReviews.map((review, index) => (
-                    <CarouselItem key={index} className='basis-1 md:basis-1/2'>
-                      <div className='p-1 h-full'>
-                        <Card className='h-full'>
-                          <CardContent className='py-2'>
-                            <div className='flex flex-col space-y-4'>
-                              <div className='flex items-center space-x-2'>
-                                <div
-                                  className='flex h-10 w-10 items-center justify-center rounded-full text-white'
-                                  style={{
-                                    backgroundColor: generateNameColor(
-                                      cn(review.firstName, review.lastName)
-                                    ),
-                                  }}
-                                >
-                                  {cn(review.firstName.charAt(0))}
-                                </div>
-                                <div className='flex flex-col space-y-2'>
-                                  <Label>
-                                    {review.firstName} {review.lastName}
-                                  </Label>
-                                  <span className='font-bold text-sm'>
-                                    {formatDistance(
-                                      new Date(review.date),
-                                      new Date(),
-                                      { addSuffix: true }
-                                    )}
-                                  </span>
-                                  <Ratings
-                                    rating={review.rate}
-                                    totalStars={5}
-                                    variant='yellow'
-                                  />
-                                </div>
-                              </div>
-                              <div className='line-clamp-5'>
-                                {review.content}
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
-              </Carousel>
-            </div>
           </div>
 
           <Card className='sticky top-0'>
@@ -179,7 +117,7 @@ const CourseIdPage = async ({ params: { courseId } }: Props) => {
                     <Enroll id={course.id} />
                   ) : (
                     <div className='flex flex-col space-y-4'>
-                      <Button>Add to cart</Button>
+                      <AddCart id={course.id} />
                       <PayMent amount={course.price} />
                     </div>
                   )}
@@ -230,7 +168,10 @@ const CourseIdPage = async ({ params: { courseId } }: Props) => {
                       >
                         H
                       </div>
-                      <span>Huy Phân Tiến</span>
+                      <span>
+                        {course.userResponse.firstName}{' '}
+                        {course.userResponse.lastName}
+                      </span>
                     </Link>
                   </div>
                 </div>

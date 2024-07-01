@@ -1,7 +1,7 @@
 'use client';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus } from 'lucide-react';
+import { AlertCircle, Plus } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import React, {
   Dispatch,
@@ -15,6 +15,7 @@ import { z } from 'zod';
 
 import Input from '@/components/inputs/Input';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -25,6 +26,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -88,7 +90,7 @@ const FormVideo = ({ lessonId, unit, setUnit }: IFormProps) => {
           title: '',
           description: '',
           file: undefined,
-          preview: false,
+          isPreview: false,
         });
         setUnit(undefined);
       }
@@ -163,33 +165,33 @@ const FormVideo = ({ lessonId, unit, setUnit }: IFormProps) => {
                           </FormItem>
                         )}
                       />
+                      <FormField
+                        control={form.control}
+                        name='isPreview'
+                        render={({ field }) => (
+                          <FormItem>
+                            <div className='flex items-center space-x-2'>
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                              <FormLabel>Enable Course Preview</FormLabel>
+                            </div>
+                            <FormDescription className='flex items-center space-x-2'>
+                              <AlertCircle className='w-5 h-5' />{' '}
+                              <span>
+                                If checked, any users/guest can view this lesson
+                                without enroll course
+                              </span>
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   </div>
-                  {/* <FormField
-                    control={form.control}
-                    name='preview'
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className='flex items-center space-x-2'>
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <FormLabel>Enable Course Preview</FormLabel>
-                        </div>
-                        <FormDescription className='flex items-center space-x-2'>
-                          <AlertCircle className='w-5 h-5' />{' '}
-                          <span>
-                            If checked, any users/guest can view this lesson
-                            without enroll course
-                          </span>
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  /> */}
                 </form>
               </Form>
             </div>

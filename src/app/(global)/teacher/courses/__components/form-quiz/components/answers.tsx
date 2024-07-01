@@ -21,10 +21,9 @@ interface AnswerProps {
     questions: {
       lessonId: string;
       title: string;
-      answers: {
-        title: string;
+      choices: {
+        content: string;
         correct: boolean;
-        questionId: string;
       }[];
     }[];
   }>;
@@ -45,7 +44,7 @@ const Answers = ({ questionIndex, control, register, errors }: AnswerProps) => {
   };
 
   const handleChecked = (value: boolean, k: number) => {
-    update(k, { ...fields[k], correct: value });
+    update(k, { ...fields[k], correct: value, id: undefined });
   };
 
   return (
@@ -75,9 +74,12 @@ const Answers = ({ questionIndex, control, register, errors }: AnswerProps) => {
           </div>
           {errors.questions &&
             errors.questions[questionIndex] &&
-            errors.questions[questionIndex]?.answers && (
+            errors.questions[questionIndex]?.choices && (
               <span className='text-red-500'>
-                {errors.questions[questionIndex]?.answers?.[k]?.title?.message}
+                {
+                  errors.questions[questionIndex]?.choices?.[k]?.content
+                    ?.message
+                }
               </span>
             )}
         </div>

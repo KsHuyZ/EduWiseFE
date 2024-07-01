@@ -20,7 +20,16 @@ const categorySchema = z.object({
 export const courseInfoSchema = z.object({
   name: z.string({ required_error: 'Course name is require!' }).trim(),
   price: z.number().default(0),
-  description: z.string().min(0, 'About course is require').trim(),
+  description: z
+    .string({
+      required_error: 'About course is require',
+    })
+    .trim(),
+  descriptionShort: z
+    .string({
+      required_error: 'Short description is required!',
+    })
+    .trim(),
   file: z.any(),
   tags: z.array(tagSchema).min(0, 'Tag at lease one item!'),
   categories: z.array(categorySchema).min(0, 'Category at lease one item!'),
@@ -36,5 +45,5 @@ export const createVideoSchema = z.object({
   file: z.any().refine((file) => {
     return ACCEPTED_VIDEO_TYPES.includes(file?.type);
   }, 'Only .mp4, .webm formats are supported.'),
-  preview: z.boolean().default(false),
+  isPreview: z.boolean().default(false),
 });

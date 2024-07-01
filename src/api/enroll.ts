@@ -1,4 +1,4 @@
 import axios from '@/lib/axios';
 
 export const enrollCourse = (id: string) =>
-  axios.post(`/enrollment/enroll?idCourse=${id}`);
+  axios.post(`/enrollment/add-to-enrollment?idCourse=${id}`);

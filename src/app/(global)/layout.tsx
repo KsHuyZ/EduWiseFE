@@ -7,10 +7,10 @@ const GlobalLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <div className='h-full'>
-        <div className='h-[80px] md:pl-56 fixed inset-y-0 w-full z-50'>
+        <div className='h-[80px] md:pl-56 fixed inset-y-0 w-full z-30'>
           <Navbar />
         </div>
-        <div className='hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-50'>
+        <div className='hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-30'>
           <Sidebar />
         </div>
         <main className='md:pl-56 min-h-screen h-full pt-[100px] bg-muted'>
