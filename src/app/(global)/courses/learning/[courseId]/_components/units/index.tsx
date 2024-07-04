@@ -84,7 +84,7 @@ const CourseVideo = ({ id }: CourseVideoProps) => {
             if (isQuestionExist.questionId === question.questionId) {
               return {
                 ...question,
-                answerResults: [{ answerId: choice.id }],
+                answerResults: [{ answerId: choice.id ?? '' }],
               };
             }
             return question;

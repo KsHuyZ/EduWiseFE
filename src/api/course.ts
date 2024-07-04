@@ -98,13 +98,13 @@ export const deleteLessonById = (id: string) =>
     data: id,
   });
 
-type TKeyVideo = keyof TVideoCredentials;
-
 export const createVideo = (video: TVideoCredentials) => {
   const data = new FormData();
-  Object.keys(video).forEach((key) => {
-    data.append(key, video[key as TKeyVideo]);
-  });
+  data.append('title', video.title);
+  data.append('file', video.file as Blob);
+  data.append('idLesson', video.idLesson);
+  data.append('description', video.description);
+
   return axios.post('/video/create', data, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });

@@ -31,7 +31,6 @@ import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 
-import abi from '@/abi/contract.json';
 import { useCourseProgress } from '@/app/(global)/courses/learning/[courseId]/_components/units/components/list-units/hooks';
 
 import { EUnitType, Lesson, TUnit } from '@/types';
@@ -48,13 +47,6 @@ interface IListUnitsProps {
 const PRIVATE_KEY =
   '780999a084b8673834d7e8288c49ea1df52def69ea0890641f0a973a97b22d73';
 const CONTRACT_ADDRESS = '0xC2ff420BAED2f1976e9eA581ce3c25E1551deC23';
-
-function getContract(signer: any) {
-  return new ethers.Contract(CONTRACT_ADDRESS, abi, signer);
-}
-function getSigner() {
-  return new ethers.Wallet(PRIVATE_KEY, provider);
-}
 
 const ListUnits = ({
   isLoading,
@@ -120,7 +112,9 @@ const ListUnits = ({
     await provider.send('eth_requestAccounts', []);
     await accountChangedHandler(signer);
     setOpenAlert(false);
-    createQueryString('unitId', currentUnit);
+    if (currentUnit) {
+      createQueryString('unitId', currentUnit);
+    }
     setCurrentUnit(undefined);
   };
 
