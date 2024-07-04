@@ -37,13 +37,13 @@ const InputMultiple = ({
     onChange([]);
   }
 
-  function selectOption(option: ITag) {
-    if (value.includes(option)) {
-      onChange(value.filter((o) => o !== option));
-    } else {
-      onChange([...value, option]);
-    }
-  }
+  // function selectOption(option: ITag) {
+  //   if (value.includes(option.name)) {
+  //     onChange(value.filter((o) => o !== option));
+  //   } else {
+  //     onChange([...value, option]);
+  //   }
+  // }
 
   const handleDeletePermission = (permissionDel: ITag) => {
     const data = categoriesSelected.filter(
@@ -76,7 +76,7 @@ const InputMultiple = ({
               className='flex items-center border border-gray-300 rounded px-2 py-1 gap-1 cursor-pointer hover:bg-gray-100 focus:bg-gray-100 focus:border-blue-500'
               key={index}
             >
-              <span>{category.title}</span>
+              <span>{category.name}</span>
               <span
                 onClick={() => handleDeletePermission(category)}
                 className='cursor-pointer'
@@ -109,7 +109,7 @@ const InputMultiple = ({
         {items
           .filter((item) => {
             const searchTerm = (value as string).toLowerCase();
-            const permissionName = item.title.toLowerCase();
+            const permissionName = item.name.toLowerCase();
             return (
               searchTerm &&
               permissionName.includes(searchTerm) &&
@@ -126,10 +126,10 @@ const InputMultiple = ({
                 <li
                   onClick={() => handleAddPermission(item)}
                   className='w-full p-2 hover:bg-gray-200 cursor-pointer'
-                  key={item.title}
+                  key={item.name}
                 >
                   <div>
-                    <div className=''>{item.title}</div>
+                    <div className=''>{item.name}</div>
                   </div>
                 </li>
               );

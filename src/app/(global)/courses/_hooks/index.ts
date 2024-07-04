@@ -10,7 +10,8 @@ export const useCourse = (
 ) =>
   useQuery({
     queryKey: ['teacher-course', sortBy, priceMin, priceMax, priceMax, keyword],
-    queryFn: () => getCourses(sortBy, priceMin, priceMax, keyword),
+    queryFn: () =>
+      getCourses(sortBy, Number(priceMin), Number(priceMax), keyword),
   });
 
 export const useCategory = () =>
