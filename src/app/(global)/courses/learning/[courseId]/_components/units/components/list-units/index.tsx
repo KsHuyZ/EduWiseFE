@@ -44,10 +44,6 @@ interface IListUnitsProps {
   id: string;
 }
 
-const PRIVATE_KEY =
-  '780999a084b8673834d7e8288c49ea1df52def69ea0890641f0a973a97b22d73';
-const CONTRACT_ADDRESS = '0xC2ff420BAED2f1976e9eA581ce3c25E1551deC23';
-
 const ListUnits = ({
   isLoading,
   data,
@@ -97,10 +93,10 @@ const ListUnits = ({
     setDefaultAccount(address);
   };
 
-  async function transferTokens(to: string, amount: number) {
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
-  }
+  // async function transferTokens(to: string, amount: number) {
+  //   const provider = new ethers.BrowserProvider(window.ethereum);
+  //   const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
+  // }
 
   const onConnect = async () => {
     if (!window.ethereum) {

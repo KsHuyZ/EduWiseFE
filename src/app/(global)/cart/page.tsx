@@ -16,7 +16,6 @@ import {
 import { useUserCart } from '@/app/(global)/_hooks';
 import Payment from '@/app/(global)/cart/_components/payment';
 import TableCart from '@/app/(global)/cart/_components/table-cart';
-import { useBuyCart } from '@/app/(global)/cart/_hooks';
 import { formatPrice } from '@/utils';
 
 const Cart = () => {
@@ -55,7 +54,19 @@ const Cart = () => {
             <div className='p-4 space-y-4'>
               <div className='flex flex-col p-1 space-y-1 '>
                 <div className='flex justify-between items-center'>
-                  <span>Cart subtotal</span> <span>{formatPrice(23000)}</span>
+                  <span>Cart subtotal</span>{' '}
+                  <span>
+                    {' '}
+                    {data && data.length > 0
+                      ? formatPrice(
+                          data.reduce(
+                            (current, course) =>
+                              course.courseResponse.price + current,
+                            0
+                          )
+                        )
+                      : '0đ'}
+                  </span>
                 </div>
                 <div className='flex justify-between items-center'>
                   <span>Discount</span> <span>-0</span>

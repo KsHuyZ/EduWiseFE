@@ -1,7 +1,9 @@
 'use client';
 
+import { Contract, ethers } from 'ethers';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react';
+import Lottie from 'react-lottie';
 
 import Spinner from '@/components/loading/spinner';
 import {
@@ -18,10 +20,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/components/ui/use-toast';
 
+import { abi } from '@/abi/contract.json';
 import { useQuestion } from '@/app/(global)/_hooks';
 import { useLessonList } from '@/app/(global)/courses/_hooks';
 import ListUnits from '@/app/(global)/courses/learning/[courseId]/_components/units/components/list-units';
+import Loading from '@/app/(global)/courses/learning/[courseId]/_components/units/components/loading';
 import Quiz from '@/app/(global)/courses/learning/[courseId]/_components/units/components/quiz';
 import { useSubmitQuiz } from '@/app/(global)/courses/learning/[courseId]/_components/units/components/quiz/hooks';
 import Video from '@/app/(global)/courses/learning/[courseId]/_components/units/components/video';
@@ -33,9 +38,9 @@ import {
   TQuestionResults,
   TUnit,
 } from '@/types';
-
 interface CourseVideoProps {
   id: string;
+  userId: string;
 }
 
 const defaultOptions = {
@@ -47,11 +52,14 @@ const defaultOptions = {
   },
 };
 
-const CourseVideo = ({ id }: CourseVideoProps) => {
+const CONTRACT_ADDRESS = '0x6CAe432354A436fd826f03E258aD84F83f84a7F8';
+
+const CourseVideo = ({ id, userId }: CourseVideoProps) => {
   const { data, isLoading } = useLessonList(id);
   const [currentLesson, setCurrentLesson] = useState<string[]>([]);
   const [selectUnit, setSelectUnit] = useState<TUnit | undefined>(undefined);
   const [open, setOpen] = useState(false);
+  const [showAnimation, setShowAnimation] = useState(false);
   const searchParams = useSearchParams();
   const [questionResultList, setQuestionResultList] = useState<
     TQuestionResults[]
@@ -61,14 +69,16 @@ const CourseVideo = ({ id }: CourseVideoProps) => {
     selectUnit?.type
   );
   const pathName = usePathname();
-  const { replace } = useRouter();
+  const { replace, push } = useRouter();
   const { mutateAsync, isPending } = useSubmitQuiz();
   const [finalResult, setFinalResult] = useState<
     { score: string; isFinal: boolean; isPass: boolean } | undefined
   >(undefined);
   const [currentIndex, setCurrentIndex] = useState(
-    Number(searchParams.get('question')) ?? 0
+    Number(searchParams.get('question')) || 0
   );
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
 
   const onAddQuestionList = useCallback(
     (question: TQuestionResponse, choice: TChoice) => {
@@ -118,9 +128,33 @@ const CourseVideo = ({ id }: CourseVideoProps) => {
     questionResultRequestList: TQuestionResults[];
   }) => {
     const result = await mutateAsync({ ...values });
+    setShowAnimation(true);
+    setFinalResult(result);
     if (!result.isFinal) {
-      setFinalResult(result);
       return;
+    }
+    try {
+      if (window.ethereum) {
+        setLoading(true);
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const contract = new Contract(CONTRACT_ADDRESS, abi, signer);
+        const transaction = await contract.createCertificate(
+          userId,
+          id,
+          ethers.toBigInt(result.score.split('/')[0]),
+          {
+            value: ethers.parseEther('0.0025'),
+          }
+        );
+        await transaction.wait();
+        toast({ variant: 'success', title: 'Saved result success!' });
+      }
+    } catch (error) {
+      toast({ variant: 'destructive', title: 'Save result fail' });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -151,7 +185,17 @@ const CourseVideo = ({ id }: CourseVideoProps) => {
     }
   }, [data, isLoading, searchParams]);
 
+  useEffect(() => {
+    if (showAnimation) {
+      setTimeout(() => setShowAnimation(false), 4000);
+    }
+  }, [showAnimation]);
+
   const handleContinueLearning = () => {
+    if (finalResult?.isFinal) {
+      push(`/certificate/${userId}/${id}`);
+      return;
+    }
     if (data) {
       data.forEach((lesson) =>
         lesson.units.forEach((unit, index) => {
@@ -167,6 +211,18 @@ const CourseVideo = ({ id }: CourseVideoProps) => {
 
   return (
     <>
+      <Loading open={loading} />
+      {showAnimation && (
+        <Lottie
+          style={{
+            backgroundColor: 'transparent',
+            position: 'fixed',
+          }}
+          options={defaultOptions}
+          height='100%'
+          width='100%'
+        />
+      )}
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -207,7 +263,9 @@ const CourseVideo = ({ id }: CourseVideoProps) => {
                         {finalResult.score}
                       </Label>
                       <Button onClick={handleContinueLearning}>
-                        Continue learning
+                        {finalResult.isFinal
+                          ? 'See your certificate'
+                          : 'Continue learning'}
                       </Button>
                     </div>
                   </CardContent>

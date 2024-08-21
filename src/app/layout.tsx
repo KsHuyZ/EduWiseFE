@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
-import { ThemeProvider } from 'next-themes';
 import NextTopLoader from 'nextjs-toploader';
 import * as React from 'react';
 
@@ -65,16 +64,16 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html>
-      <body lang={locale} suppressHydrationWarning>
-        {/* <ThemeProvider defaultTheme='system' enableSystem> */}
-        <NextTopLoader color='var(--color-primary-700)' />
-        <NextIntlClientProvider messages={messages}>
-          <Toaster />
-          <Providers>{children}</Providers>
-        </NextIntlClientProvider>
-        {/* </ThemeProvider> */}
-      </body>
-    </html>
+    <>
+      <html>
+        <body lang={locale} suppressHydrationWarning>
+          <NextTopLoader color='var(--color-primary-700)' />
+          <NextIntlClientProvider messages={messages}>
+            <Toaster />
+            <Providers>{children}</Providers>
+          </NextIntlClientProvider>
+        </body>
+      </html>
+    </>
   );
 }
