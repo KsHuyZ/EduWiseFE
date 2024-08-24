@@ -230,8 +230,8 @@ devDependencies:
     specifier: ^2.0.0
     version: 2.0.0(@typescript-eslint/eslint-plugin@5.62.0)(eslint@8.56.0)
   husky:
-    specifier: ^7.0.4
-    version: 7.0.4
+    specifier: ^8.0.0
+    version: 8.0.3
   jest:
     specifier: ^27.5.1
     version: 27.5.1
@@ -6431,9 +6431,9 @@ packages:
     engines: {node: '>=14.18.0'}
     dev: true
 
-  /husky@7.0.4:
-    resolution: {integrity: sha512-vbaCKN2QLtP/vD4yvs6iz6hBEo6wkSzs8HpRah1Z6aGmF2KW5PdYuAd7uX5a+OyBZHBhd+TFLqgjUgytQr4RvQ==}
-    engines: {node: '>=12'}
+  /husky@8.0.3:
+    resolution: {integrity: sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==}
+    engines: {node: '>=14'}
     hasBin: true
     dev: true
 
