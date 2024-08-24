@@ -1,9 +1,11 @@
+import { ERoles } from '@/types';
+
 export type TUser = {
   id: string;
   firstName: string;
   lastName: string;
   email: string;
-  roles: string[];
+  role: ERoles;
   avatar?: string;
 };
 
@@ -16,7 +18,6 @@ export type TSignInCredentials = {
 export type TSignUpCredentials = {
   email: string;
   password: string;
-  passwordConfirm: string;
   firstName: string;
   lastName: string;
 };

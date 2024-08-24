@@ -1,5 +1,5 @@
 export enum ERoles {
   TEACHER = 'TEACHER',
-  STUDENT = 'USER',
+  STUDENT = 'STUDENT',
   ADMIN = 'ADMIN',
 }

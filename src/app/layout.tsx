@@ -67,7 +67,7 @@ export default async function RootLayout({
     <>
       <html>
         <body lang={locale} suppressHydrationWarning>
-          <NextTopLoader color='var(--color-primary-700)' />
+          <NextTopLoader color='var(--color-primary-600)' />
           <NextIntlClientProvider messages={messages}>
             <Toaster />
             <Providers>{children}</Providers>

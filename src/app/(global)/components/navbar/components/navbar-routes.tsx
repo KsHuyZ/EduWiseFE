@@ -85,7 +85,7 @@ const NavbarRoutes = ({ user }: { user?: TUser }) => {
             </SelectGroup>
           </SelectContent>
         </Select>
-        {user?.roles.includes(ERoles.STUDENT) && <Cart />}
+        {user?.role.includes(ERoles.STUDENT) && <Cart />}
         <SettingTheme />
         {user ? (
           <DropdownMenu>

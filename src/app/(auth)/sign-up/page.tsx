@@ -1,9 +1,2 @@
-import React from 'react';
-
-import Introduction from '@/app/(auth)/sign-up/_components/introduction';
-
-const SignUp = () => {
-  return <Introduction />;
-};
-
+import SignUp from '@/feature/auth/features/sign-up';
 export default SignUp;

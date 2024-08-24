@@ -6,10 +6,6 @@ export const metadata: Metadata = {
   description: 'Sign In page',
 };
 
-export default function SignInLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }

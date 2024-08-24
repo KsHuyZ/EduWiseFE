@@ -1,4 +1,4 @@
-import axios from '@/lib/axios';
+import axios from '@/lib/api';
 
 import { TQuestionResponse, TQuestionResults, TQuizCredentials } from '@/types';
 

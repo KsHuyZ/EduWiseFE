@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useGoogleLogin } from '@react-oauth/google';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { setCookies } from '@/lib/action';
@@ -19,57 +19,60 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { useToast } from '@/components/ui/use-toast';
 
-import { useSignIn } from '@/app/(auth)/sign-in/_hooks';
+import {
+  useGoogleSignInQuery,
+  useSignIn,
+} from '@/feature/auth/features/sign-in/components/form/hooks';
 import { signInSchema } from '@/validator';
 
 import { ERoles, TSignInCredentials } from '@/types';
 
 const SignInForm = () => {
   const router = useRouter();
-  const { mutateAsync: signIn, isPending, error } = useSignIn();
-
+  const { mutateAsync: signIn, isPending } = useSignIn();
+  const { mutateAsync, isPending: googleLoading } = useGoogleSignInQuery();
+  const [loading, setLoading] = useState(false);
   const form = useForm<TSignInCredentials>({
     resolver: zodResolver(signInSchema),
   });
   const searchParams = useSearchParams();
+  const { toast } = useToast();
+
   const onSubmit = async (values: TSignInCredentials) => {
     const result = await signIn(values);
-    const { token, refreshToken, userResponse } = result;
-    await setCookies('user', userResponse);
+    const { token, refreshToken, user } = result;
+    await setCookies('user', user);
     await setCookies('token', { token, refreshToken });
     const callBack = searchParams.get('callBack');
     if (callBack) {
       router.replace(callBack);
       return;
     }
-    if (userResponse.roles.includes(ERoles.TEACHER)) {
+    if (user.role.includes(ERoles.TEACHER)) {
       router.replace('/teacher');
       return;
     }
     router.replace(`/`);
   };
 
-  useEffect(() => {
-    const errorData = error as unknown as null | {
-      data: {
-        items: TSignInCredentials;
-      };
-    };
-    if (errorData && errorData.data) {
-      const items = errorData.data.items;
-      if (items?.email) {
-        form.setError('email', { message: items?.email });
-      }
-      if (items?.password) {
-        form.setError('password', { message: items?.password });
-      }
-    }
-  }, [error, form]);
   const login = useGoogleLogin({
-    onSuccess: (codeResponse) => console.log(codeResponse),
-    onError: (error) => console.log('Login Failed:', error),
+    onSuccess: (response) => {
+      setLoading(false);
+      mutateAsync(response.access_token);
+    },
+    onError: (error) => {
+      console.log(error);
+      setLoading(false);
+      toast({ title: 'Something went wrong', variant: 'destructive' });
+    },
   });
+
+  const googleLogin = () => {
+    setLoading(true);
+    login();
+  };
   return (
     <Form {...form}>
       <form className='space-y-4' onSubmit={form.handleSubmit(onSubmit)}>
@@ -147,7 +150,8 @@ const SignInForm = () => {
           type='button'
           variant='outline'
           className='w-full'
-          onClick={() => login()}
+          onClick={googleLogin}
+          isLoading={googleLoading || loading}
         >
           <div className='flex space-x-2 items-center w-full justify-center'>
             <img src='/images/google.svg' className='w-4 h-4' />{' '}

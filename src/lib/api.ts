@@ -3,7 +3,7 @@ import type {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
-import Axios from 'axios';
+import axios from 'axios';
 
 import { getCookies, setCookies } from '@/lib/action';
 
@@ -11,8 +11,8 @@ import { refreshToken as refreshTokenApi } from '@/api';
 
 import { Token } from '@/types';
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const axios = Axios.create({
-  baseURL: API_URL,
+const api = axios.create({
+  baseURL: `${API_URL}/api/v1`,
 });
 
 const onResponseSuccess = (response: AxiosResponse) => {
@@ -26,9 +26,9 @@ const onResponseError = async (error: AxiosError) => {
   return Promise.reject(error);
 };
 
-axios.interceptors.response.use(onResponseSuccess, onResponseError);
+api.interceptors.response.use(onResponseSuccess, onResponseError);
 
-axios.interceptors.request.use(
+api.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     const token = (await getCookies('token')) as Token;
     if (token) {
@@ -39,7 +39,7 @@ axios.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-axios.interceptors.response.use(
+api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
@@ -58,11 +58,11 @@ axios.interceptors.response.use(
         originalRequest.headers = {
           Authorization: 'Bearer ' + result.token,
         };
-        return axios(originalRequest);
+        return api(originalRequest);
       }
     }
     return Promise.reject(error);
   }
 );
 
-export default axios;
+export default api;

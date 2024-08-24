@@ -1,40 +1,25 @@
-import axios from '@/lib/axios';
+import api from '@/lib/api';
 
-import { RefreshTokenResponse, TSignUpCredentials } from '@/types';
+import {
+  ERoles,
+  RefreshTokenResponse,
+  SignInResponse,
+  TSignInCredentials,
+  TSignUpCredentials,
+} from '@/types';
 
 export const refreshToken = (
   refreshToken: string
-): Promise<RefreshTokenResponse> =>
-  axios.post('/auth/refresh', `Bearer ${refreshToken}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: '',
-    },
-  });
+): Promise<RefreshTokenResponse> => api.post('/auth/refresh');
 
-export const signOut = () => axios.get('/auth/logout');
+export const signOut = () => api.get('/auth/logout');
 
-export const teacherSignUp = (user: TSignUpCredentials) =>
-  axios.post('/auth/register-teacher', user);
-
-export const signUp = (user: TSignUpCredentials) =>
-  axios.post('/auth/register', user);
-
-import { TSignInCredentials } from '@/types';
-import { Token, TUser } from '@/types';
-import { SignInResponse } from '@/types/response';
+export const signUp = (
+  user: TSignUpCredentials & { role: ERoles.TEACHER | ERoles.STUDENT }
+) => api.post('/auth/email/register', user);
 
 export const signIn = (user: TSignInCredentials): Promise<SignInResponse> =>
-  axios.post('/auth/login', user);
+  api.post('/auth/email/login', user);
 
-export const saveUser = (user: TUser) =>
-  fetch('/api/profile', {
-    method: 'POST',
-    body: JSON.stringify(user),
-  });
-
-export const saveToken = (token: Token) =>
-  fetch('/api/token', {
-    method: 'POST',
-    body: JSON.stringify(token),
-  });
+export const googleSignIn = (idToken: string): Promise<SignInResponse> =>
+  api.post('/auth/google/login', { idToken });

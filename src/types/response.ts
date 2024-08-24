@@ -7,11 +7,8 @@ export type RefreshTokenResponse = {
   expires: { token: number; refreshToken: number };
 };
 export type SignInResponse = {
-  expiresIn: {
-    token: number;
-    refreshToken: number;
-  };
-  userResponse: TUser;
+  user: TUser;
+  tokenExpires: number;
 } & Token;
 
 export type TableApiResponse<T> = {
