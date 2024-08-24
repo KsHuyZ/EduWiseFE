@@ -11,6 +11,5 @@ export const generateNameColor = (name: string) => {
 
 export * from './format';
 export * from './storage';
-export * from './test';
 export * from './time';
 export * from './validate';
