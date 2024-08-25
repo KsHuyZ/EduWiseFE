@@ -4,6 +4,17 @@ export default {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
+      container: {
+        center: true, // Để container luôn được canh giữa
+        padding: '1rem', // Padding mặc định
+        screens: {
+          sm: '540px',
+          md: '720px',
+          lg: '960px',
+          xl: '1140px',
+          '2xl': '1320px',
+        },
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

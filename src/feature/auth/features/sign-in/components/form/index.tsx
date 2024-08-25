@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useGoogleLogin } from '@react-oauth/google';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { setCookies } from '@/lib/action';
@@ -31,7 +31,7 @@ import { ERoles, TSignInCredentials } from '@/types';
 
 const SignInForm = () => {
   const router = useRouter();
-  const { mutateAsync: signIn, isPending } = useSignIn();
+  const { mutateAsync: signIn, isPending, error } = useSignIn();
   const { mutateAsync, isPending: googleLoading } = useGoogleSignInQuery();
   const [loading, setLoading] = useState(false);
   const form = useForm<TSignInCredentials>({
@@ -62,8 +62,7 @@ const SignInForm = () => {
       setLoading(false);
       mutateAsync(response.access_token);
     },
-    onError: (error) => {
-      console.log(error);
+    onError: () => {
       setLoading(false);
       toast({ title: 'Something went wrong', variant: 'destructive' });
     },
@@ -73,6 +72,17 @@ const SignInForm = () => {
     setLoading(true);
     login();
   };
+
+  useEffect(() => {
+    if (error) {
+      const errorMessage = error as unknown as TSignInCredentials;
+      errorMessage.email &&
+        form.setError('email', { message: errorMessage.email });
+      errorMessage.password &&
+        form.setError('password', { message: errorMessage.password });
+    }
+  }, [error, form]);
+
   return (
     <Form {...form}>
       <form className='space-y-4' onSubmit={form.handleSubmit(onSubmit)}>
@@ -133,6 +143,7 @@ const SignInForm = () => {
           type='submit'
           className='w-full text-center'
           isLoading={isPending}
+          disabled={!form.formState.isDirty}
         >
           Sign in
         </Button>

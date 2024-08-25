@@ -18,9 +18,6 @@ export const useSignIn = () => {
         description: 'You are sign in success!',
       });
     },
-    onError(error) {
-      toast({ title: validateError(error), variant: 'destructive' });
-    },
   });
 };
 
