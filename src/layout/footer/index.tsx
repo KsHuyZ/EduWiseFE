@@ -106,9 +106,7 @@ const Footer = () => {
                     height={20}
                     alt='message'
                   />
-                  <p className='text-tertiary-600'>
-                    abc@gmail.com
-                  </p>
+                  <p className='text-tertiary-600'>abc@gmail.com</p>
                 </div>
               </li>
               <li>
@@ -119,9 +117,7 @@ const Footer = () => {
                     height={20}
                     alt='call'
                   />
-                  <p className='text-tertiary-600'>
-                    +84 8765 432 1
-                  </p>
+                  <p className='text-tertiary-600'>+84 8765 432 1</p>
                 </div>
               </li>
             </ul>
