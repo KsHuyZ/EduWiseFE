@@ -1,4 +1,12 @@
-import { ICategory, ImageType, ITag, TQuiz, TUser } from '@/types';
+import {
+  ELevel,
+  EStatus,
+  ICategory,
+  ImageType,
+  ITag,
+  TQuiz,
+  TUser,
+} from '@/types';
 
 export type CourseCredentials = {
   id?: string;
@@ -24,6 +32,24 @@ export type CourseType = {
   tags: ITag[];
   chapters?: Lesson[];
   userResponse: TUser;
+};
+
+export type TCourse = {
+  id: string;
+  image: string;
+  name: string;
+  videoPreview: string;
+  description: string;
+  shortDescription: string;
+  createdBy: TUser;
+  level: ELevel;
+  status: EStatus;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string;
+  price: number;
+  duration: number;
 };
 
 export type TVideo = {

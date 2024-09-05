@@ -35,6 +35,11 @@ export default {
           900: 'rgb(var(--tw-color-primary-900))',
           950: 'rgb(var(--tw-color-primary-950))',
         },
+        tertiary: {
+          600: '#685f78',
+          800: 'rgb(0, 32, 88)',
+        },
+
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
@@ -89,6 +94,17 @@ export default {
           },
           to: { top: '0', opacity: '1' },
         },
+        'fade-in-down': {
+          '0%': {
+            opacity: '0',
+            transform: 'translate3d(0, -100%, 0)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translate3d(0, 0, 0)',
+          },
+        },
+
         'accordion-down': {
           from: { height: '0' },
           to: { height: 'var(--radix-accordion-content-height)' },
@@ -110,6 +126,7 @@ export default {
         flicker: 'flicker 3s linear infinite',
         shimmer: 'shimmer 1.3s linear infinite',
         fadetop: 'fadetop 0.4s',
+        'fade-in-down': 'fade-in-down 2s',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'spin-slow': 'spin 3s linear infinite',

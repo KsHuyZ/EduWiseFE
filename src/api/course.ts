@@ -7,6 +7,7 @@ import {
   ICategory,
   Lesson,
   LessonCredentials,
+  TCourse,
   TVideoCredentials,
 } from '@/types';
 import { TableApiResponse } from '@/types/response';
@@ -61,7 +62,7 @@ export const getCourses = (
   priceMin = 0,
   priceMax = 1000000000,
   keyword: string | null
-): Promise<TableApiResponse<CourseType[]>> =>
+): Promise<TableApiResponse<TCourse[]>> =>
   axios.get('/course/get-all', {
     params: {
       sort,

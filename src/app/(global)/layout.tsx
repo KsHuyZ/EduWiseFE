@@ -1,10 +1,14 @@
-import Header from '@/layout/header';
 import React from 'react';
 
-const Layout = () => {
+import Footer from '@/layout/footer';
+import Header from '@/layout/header';
+
+const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className='container'>
+    <div>
       <Header />
+      {children}
+      <Footer />
     </div>
   );
 };

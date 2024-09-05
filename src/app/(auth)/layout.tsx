@@ -16,7 +16,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               alt='logo'
               width={144}
               height={144}
-              objectFit='cover'
               priority
             />
           </Link>

@@ -1,7 +1,2 @@
-import React from 'react';
-
-const LandingPage = () => {
-  return <div></div>;
-};
-
+import LandingPage from '@/feature/landing';
 export default LandingPage;

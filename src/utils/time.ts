@@ -1,3 +1,5 @@
+import { intervalToDuration } from 'date-fns';
+
 /**
  * regular expression to check for valid hour format (01-23)
  */
@@ -201,4 +203,19 @@ export function display12HourValue(hours: number) {
   if (hours >= 22) return `${hours - 12}`;
   if (hours % 12 > 9) return `${hours}`;
   return `0${hours % 12}`;
+}
+
+export function formatTimeToDuration(time: number) {
+  const duration = intervalToDuration({ start: 0, end: time * 1000 });
+
+  let timeString = '';
+
+  if ((duration.hours ?? 0) > 0) {
+    timeString += `${duration.hours} hrs `;
+  }
+
+  if ((duration.minutes ?? 0) > 0) {
+    timeString += `${duration.minutes} mins`;
+  }
+  return timeString;
 }
