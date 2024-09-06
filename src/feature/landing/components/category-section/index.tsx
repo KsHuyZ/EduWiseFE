@@ -9,7 +9,7 @@ const CategorySection = () => {
     <section className='px-5 xl:px-0 xl:container'>
       <div className='flex flex-col space-y-10'>
         <div className='flex flex-col space-x-3 space-y-3'>
-          <div className='flex items-center justify-between'>
+          <div className='flex justify-between items-start flex-col lg:flex-row lg:items-center space-y-4'>
             <div className='flex flex-col space-y-3'>
               <span className='text-primary-800 text-xl font-bold'>
                 Favourite Course
@@ -31,7 +31,7 @@ const CategorySection = () => {
             Suspendisse imperdiet.
           </span>
         </div>
-        <div className='grid grid-cols-4 gap-4'>
+        <div className='grid grid-cols-1 gap-1 gap-y-4 lg:grid-cols-4 lg:gap-4'>
           <CategoryCard
             src='/images/graphql.png'
             category='GraphQL'

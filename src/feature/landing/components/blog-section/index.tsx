@@ -30,7 +30,7 @@ const BlogSection = () => {
               aenean accumsan bibendum gravida maecenas augue elementum et
               neque. Suspendisse imperdiet.
             </p>
-            <div className='grid grid-cols-4 gap-4'>
+            <div className='grid grid-cols-1 lg:grid-cols-4 gap-4'>
               <div className='flex flex-col bg-white rounded-md overflow-hidden shadow-md'>
                 <Image
                   src='/images/spider.jpg'
@@ -98,7 +98,7 @@ const BlogSection = () => {
               background:
                 'linear-gradient(90deg,rgba(161,196,253,0.79) 0%,rgba(194,233,251,0.36) 100%)',
             }}
-            className='p-7 rounded-2xl grid grid-cols-3 gap-3'
+            className='p-7 rounded-2xl grid grid-cols-1 gap-y-10 lg:grid-cols-3 lg:gap-3'
           >
             <CountUpInfo
               quantity={1452}
@@ -120,7 +120,7 @@ const BlogSection = () => {
             <h1 className='text-tertiary-800 text-center max-w-[632px] font-bold'>
               Unlimited access to 360+ courses and 1,600+ hands-on labs
             </h1>
-            <div className='flex items-center justify-between container'>
+            <div className='grid grid-cols-4 gap-4 lg:grid-cols-10 items-center lg:gap-10 container'>
               {listCourses.map((course) => (
                 <div
                   className='bg-white p-3 rounded-md hover:-translate-y-3 duration-150 cursor-pointer'

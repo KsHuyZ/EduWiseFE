@@ -4,9 +4,9 @@ import React from 'react';
 const BecomeSection = () => {
   return (
     <section className='px-5 xl:px-0 xl:container'>
-      <div className='grid grid-cols-2 gap-10'>
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-10'>
         <div className='bg-primary-400 p-7 rounded-md flex flex-col items-center'>
-          <div className='grid grid-cols-2 gap-2 items-center'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-2 items-center justify-center'>
             <div className='space-y-4'>
               <h3 className='text-tertiary-800 font-bold'>
                 Become An Instructor
@@ -25,7 +25,7 @@ const BecomeSection = () => {
           </div>
         </div>
         <div className='bg-[#ffe88f] p-7 rounded-md'>
-          <div className='grid grid-cols-2 gap-2 items-center'>
+          <div className='grid grid-cols-1 justify-center lg:grid-cols-2 gap-2 items-center'>
             <div className='space-y-4'>
               <h3 className='text-tertiary-800 font-bold'>
                 Transform Access To Education

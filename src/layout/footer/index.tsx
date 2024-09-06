@@ -7,8 +7,8 @@ const Footer = () => {
   return (
     <footer className='bg-white container'>
       <div className='w-full py-6 lg:py-8'>
-        <div className='grid grid-cols-12'>
-          <div className='mb-6 md:mb-0 col-span-4'>
+        <div className='grid grid-cols-1 lg:grid-cols-12 gap-y-5'>
+          <div className='mb-6 md:mb-0 lg:col-span-4'>
             <div className='flex flex-col space-y-4 max-w-[315px]'>
               <Image
                 src='/images/logo.svg'
@@ -29,7 +29,7 @@ const Footer = () => {
               </p>
             </div>
           </div>
-          <div className='col-span-2'>
+          <div className='lg:col-span-2'>
             <h5 className='mb-6 uppercase text-tertiary-800 font-bold'>
               For Instructor
             </h5>
@@ -46,7 +46,7 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          <div className='col-span-2'>
+          <div className='lg:col-span-2'>
             <h5 className='mb-6 uppercase text-tertiary-800 font-bold'>
               For Student
             </h5>
@@ -69,7 +69,7 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          <div className='col-span-4'>
+          <div className='lg:col-span-4'>
             <h5 className='mb-6 uppercase text-tertiary-800 font-bold'>
               Address
             </h5>

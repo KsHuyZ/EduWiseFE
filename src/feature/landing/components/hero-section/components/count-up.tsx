@@ -7,12 +7,14 @@ const CountUpUser = () => {
       {({ countUpRef }) => (
         <div>
           <span
-            className='text-tertiary-800 text-5xl font-extrabold'
+            className='text-tertiary-800 text-4xl lg:text-5xl font-extrabold'
             ref={countUpRef}
           >
             0
           </span>
-          <span className='text-tertiary-800 text-5xl font-extrabold'>+</span>
+          <span className='text-tertiary-800 text-4xl lg:text-5xl font-extrabold'>
+            +
+          </span>
         </div>
       )}
     </CountUp>

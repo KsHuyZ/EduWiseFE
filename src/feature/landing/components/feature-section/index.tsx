@@ -34,7 +34,7 @@ const FeatureSection = () => {
   return (
     <section className='bg-[url(/images/banner.png)] w-full py-20'>
       <div className='px-5 xl:px-0 xl:container space-y-4'>
-        <div className='flex justify-between items-center'>
+        <div className='flex flex-col justify-between items-start lg:items-center lg:flex-row space-y-6'>
           <div className='flex flex-col space-y-6'>
             <p className='font-bold text-xl text-primary-800'>What's New</p>
             <h1 className='text-tertiary-800'>Featured Courses</h1>
@@ -51,7 +51,7 @@ const FeatureSection = () => {
           accumsan bibendum gravida maecenas augue elementum et neque.
           Suspendisse imperdiet.
         </p>
-        <div className='grid grid-cols-3 gap-5'>
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-5'>
           <CourseCard course={mockCourse} />
           <CourseCard course={mockCourse} />
           <CourseCard course={mockCourse} />

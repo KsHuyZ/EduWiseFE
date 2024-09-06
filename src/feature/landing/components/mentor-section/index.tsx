@@ -8,7 +8,7 @@ const MentorSection = () => {
   return (
     <section className='bg-[url(/images/banner.png)] py-10'>
       <div className='px-5 xl:px-0 xl:container'>
-        <div className='grid grid-cols-2 gap-2'>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
           <Image src='/images/share.png' width={867} height={650} alt='share' />
           <div className='flex flex-col space-y-10'>
             <h1 className='text-tertiary-800 font-bold'>
