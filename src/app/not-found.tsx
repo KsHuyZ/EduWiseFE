@@ -31,8 +31,9 @@ export default function NotFound() {
           <span className='text-primary-600 mb-4 text-4xl font-extrabold tracking-tight '>
             Oh No! Error 404
           </span>
-          <p className='mb-4'>
-            This page you requested counld not found. May the force be with you!
+          <p className='mb-4 text-muted-foreground'>
+            This page you requested could not found. May the force be with
+            you!
           </p>
           <Link
             href='/'
