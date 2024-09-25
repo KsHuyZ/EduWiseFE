@@ -5,11 +5,11 @@ import Header from '@/layout/header';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div>
+    <>
       <Header />
-      {children}
+      <div className='min-h-screen'>{children}</div>
       <Footer />
-    </div>
+    </>
   );
 };
 

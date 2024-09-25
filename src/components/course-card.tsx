@@ -12,7 +12,7 @@ import { formatPrice, formatTimeToDuration } from '@/utils';
 
 import { ELevel, EStatus, TUser } from '@/types';
 
-interface CourseCardProps {
+export interface CourseCardProps {
   course?: {
     id: string;
     image: string;
@@ -29,6 +29,7 @@ interface CourseCardProps {
     deletedAt?: string;
     price: number;
     duration: number;
+    willLearn: string[];
   };
   loading?: boolean;
 }

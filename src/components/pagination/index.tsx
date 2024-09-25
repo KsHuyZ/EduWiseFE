@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {
-  Pagination as PaginationShad,
+  Pagination,
   PaginationContent,
   PaginationEllipsis,
   PaginationItem,
@@ -53,17 +53,11 @@ const Paginations = (props: IPaginationProps): JSX.Element | null => {
       onPageChange(currentPage - 1);
     }
   };
-
-  //   const lastPage =
-  //     paginationRange !== undefined &&
-  //     paginationRange[paginationRange.length - 1];
   return (
-    <PaginationShad>
+    <Pagination>
       <PaginationContent>
-        <PaginationItem onClick={onPrevious}>
-          <PaginationLink>
-            <PaginationPrevious />
-          </PaginationLink>
+        <PaginationItem onClick={onPrevious} className='cursor-pointer'>
+          <PaginationPrevious />
         </PaginationItem>
         {paginationRange?.map((pageNumber) => {
           if (pageNumber === DOTS) {
@@ -85,11 +79,11 @@ const Paginations = (props: IPaginationProps): JSX.Element | null => {
             </PaginationItem>
           );
         })}
-        <PaginationItem onClick={onNext}>
+        <PaginationItem onClick={onNext} className='cursor-pointer'>
           <PaginationNext />
         </PaginationItem>
       </PaginationContent>
-    </PaginationShad>
+    </Pagination>
   );
 };
 

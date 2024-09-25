@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 import * as React from 'react';
 
 import NextImage from '@/components/NextImage';
-import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Not Found',
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <section className="flex w-full justify-center bg-[url(/images/error-bg1.png')">
+    <section className='flex w-full justify-center bg-[url(/images/error-bg1.png)] bg-center bg-no-repeat'>
       <div className=''>
         <div className='flex max-w-screen-sm space-y-10 h-screen flex-col items-center justify-center text-center'>
           <NextImage
@@ -22,18 +22,17 @@ export default function NotFound() {
           />
           <NextImage
             src='/images/error-01.png'
-            width={600}
-            height={600}
+            width={400}
+            height={400}
             alt='not found'
             layout='none'
           />
 
-          <span className='text-primary-600  mb-4 text-4xl font-extrabold tracking-tight '>
+          <span className='text-primary-600 mb-4 text-4xl font-extrabold tracking-tight '>
             Oh No! Error 404
           </span>
-          <p className='mb-4 text-lg font-light '>
-            Sorry, we can&apos;t find that page. You&apos;ll find lots to
-            explore on the home page.{' '}
+          <p className='mb-4'>
+            This page you requested counld not found. May the force be with you!
           </p>
           <Link
             href='/'

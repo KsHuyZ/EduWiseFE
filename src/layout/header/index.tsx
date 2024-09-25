@@ -1,9 +1,9 @@
 'use client';
-import { Menu } from 'lucide-react';
+import { Menu, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 
 import { cn } from '@/lib/utils';
 import { useHeader } from '@/hooks';
@@ -27,18 +27,6 @@ const headerRoutes = [
     href: '/about-us',
   },
   {
-    label: 'Courses',
-    href: '/courses',
-  },
-  {
-    label: 'Instructor',
-    href: '/instructor',
-  },
-  {
-    label: 'Student',
-    href: '/student',
-  },
-  {
     label: 'Blog',
     href: '/blog',
   },
@@ -49,6 +37,23 @@ const Header = () => {
   const router = useRouter();
   const pathName = usePathname();
   const [open, setOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const [value, setValue] = useState(searchParams.get('name') ?? '');
+  const [focus, setFocus] = useState(false);
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const disabled = value.length <= 3;
+    !disabled && router.push(`/courses/?name=${value}`);
+  };
+
+  useEffect(() => {
+    const searchName = searchParams.get('name') ?? '';
+    setValue(searchName);
+  }, [searchParams]);
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+  };
   return (
     <>
       <Sheet open={open} onOpenChange={setOpen}>
@@ -107,7 +112,9 @@ const Header = () => {
         <div
           className={cn(
             'h-20 w-full flex items-center',
-            scroll ? 'fixed bg-white shadow-md' : 'absolute'
+            scroll || pathName !== '/'
+              ? 'fixed bg-white shadow-md backdrop-blur-sm bg-white/90'
+              : 'absolute'
           )}
         >
           <div className='grid grid-cols-3 gap-3 lg:grid-cols-1 lg:gap-1 px-5 lg:px-0 items-center w-full'>
@@ -116,35 +123,50 @@ const Header = () => {
               onClick={() => setOpen(true)}
             />
             <div className='lg:container flex items-center justify-center lg:justify-between w-full'>
-              <Image
-                src='/images/logo.svg'
-                alt='logo'
-                width={150}
-                height={150}
-                priority
-              />
-              <div className='hidden lg:flex items-center space-x-6'>
-                {headerRoutes.map((route) => (
-                  <Link
-                    href={route.href}
-                    key={route.href}
-                    className={cn(
-                      'text-center hover:text-primary-800 font-semibold text-tertiary-800 duration-150',
-                      pathName === route.href ? 'text-primary-600' : ''
-                    )}
-                  >
-                    {route.label}
-                  </Link>
-                ))}
+              <div className='flex items-center space-x-8'>
+                <Link href='/'>
+                  <Image
+                    src='/images/logo.svg'
+                    alt='logo'
+                    width={150}
+                    height={150}
+                    priority
+                  />
+                </Link>
               </div>
-              <div className='hidden lg:grid grid-cols-2 items-center gap-2'>
-                <Button onClick={() => router.push('/sign-in')}>Login</Button>
-                <Button
-                  variant='outline'
-                  onClick={() => router.push('/sign-up')}
-                >
-                  Register
-                </Button>
+              <div className='flex items-center space-x-4'>
+                {pathName !== '/' && (
+                  <form
+                    className={cn(
+                      'relative duration-500',
+                      focus || value ? 'w-[500px]' : 'w-12'
+                    )}
+                    onSubmit={onSubmit}
+                    onClick={() => setFocus(true)}
+                  >
+                    <Search className='text-primary-600 w-4 h-4 absolute top-1/2 transform -translate-y-1/2 left-3' />
+                    <input
+                      placeholder='Search School, Online educational centers, etc...'
+                      className={cn(
+                        'bg-gray-50 p-3 border border-gray-300 text-gray-900 sm:text-sm focus:ring-primary-600 focus:border-primary-600 block w-full transition-colors pl-10 rounded-full',
+                        focus || value ? '' : 'cursor-pointer'
+                      )}
+                      onChange={onChange}
+                      value={value}
+                      onFocus={() => setFocus(true)}
+                      onBlur={() => setFocus(false)}
+                    />
+                  </form>
+                )}
+                <div className='hidden lg:grid grid-cols-2 items-center gap-2'>
+                  <Button onClick={() => router.push('/sign-in')}>Login</Button>
+                  <Button
+                    variant='outline'
+                    onClick={() => router.push('/sign-up')}
+                  >
+                    Register
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

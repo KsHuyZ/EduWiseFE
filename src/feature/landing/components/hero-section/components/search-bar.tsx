@@ -11,7 +11,7 @@ const SearchBar = () => {
   const disabled = value.length <= 3;
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    !disabled && router.push(`/${value}`);
+    !disabled && router.push(`/courses/?name=${value}`);
   };
   return (
     <form
