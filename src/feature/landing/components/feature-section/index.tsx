@@ -26,6 +26,7 @@ const mockCourse = {
   level: ELevel.BEGINNER,
   status: EStatus.ACTIVE,
   isDeleted: true,
+  willLearn: ['Become master css', 'Become master React', "I don't know"],
   createdAt: '2024-08-31T08:06:49.029Z',
   updatedAt: '2024-08-31T08:06:49.029Z',
 };
