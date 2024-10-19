@@ -115,7 +115,7 @@ const CoursesPage = () => {
               </div>
               <Paginations
                 onPageChange={(page) => {
-                  console.log(page);
+                  // console.log(page);
                 }}
                 currentPage={1}
                 totalCount={20}

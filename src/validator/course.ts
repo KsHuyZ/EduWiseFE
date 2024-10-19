@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { ELevel } from '@/types';
+
 const ACCEPTED_VIDEO_TYPES = [
   'video/mp4',
   'video/webm',
@@ -8,14 +10,16 @@ const ACCEPTED_VIDEO_TYPES = [
   'video/x-matroska',
 ];
 
-const tagSchema = z.object({
-  id: z.string(),
-  name: z.string().min(0, 'Tag name is require!'),
-});
-const categorySchema = z.object({
-  id: z.string(),
-  name: z.string().min(0, 'Category name is require!'),
-});
+export interface CreateCourseForm {
+  name: string;
+  description: string;
+  shortDescription: string;
+  tags: string[];
+  categories: string[];
+  price: number;
+  image: File;
+  level: ELevel;
+}
 
 export const courseInfoSchema = z.object({
   name: z.string({ required_error: 'Course name is require!' }).trim(),
@@ -25,18 +29,15 @@ export const courseInfoSchema = z.object({
       required_error: 'About course is require',
     })
     .trim(),
-  descriptionShort: z
+  shortDescription: z
     .string({
       required_error: 'Short description is required!',
     })
     .trim(),
-  file: z.any(),
-  tags: z.array(tagSchema).min(0, 'Tag at lease one item!'),
-  categories: z.array(categorySchema).min(0, 'Category at lease one item!'),
+  image: z.any(),
+  tags: z.array(z.string()).min(0, 'Tag at lease one item!'),
+  categories: z.array(z.string()).min(0, 'Category at lease one item!'),
   level: z.string().min(0, 'Level is require!'),
-  discount: z.number({
-    required_error: 'Discount is require!',
-  }),
 });
 
 export const createVideoSchema = z.object({

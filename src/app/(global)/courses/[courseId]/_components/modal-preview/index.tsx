@@ -13,12 +13,10 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import { ImageType } from '@/types';
-
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 
 interface IModalPreviewProps {
-  img: ImageType;
+  img: string;
   name: string;
 }
 
@@ -33,7 +31,7 @@ const ModalPreview = ({ img, name }: IModalPreviewProps) => {
             </div>
           </div>
           <Image
-            src={img.url}
+            src={img}
             width={500}
             height={200}
             className='rounded-md'

@@ -27,7 +27,7 @@ const teacherRoutes: GuestRoutes[] = [
   {
     icon: LayoutDashboard,
     label: 'Dashboard',
-    href: '/teacher',
+    href: '/teacher/dashboard',
   },
   {
     icon: GraduationCap,
@@ -92,7 +92,7 @@ export const SidebarRoutes = ({ user }: ISidebarProps) => {
   const routes = isTeacherPage ? teacherRoutes : guestRoutes;
 
   return (
-    <div className='flex flex-col w-full'>
+    <div className='flex flex-col w-full space-y-1'>
       {routes.map(({ href, icon, label }) => (
         <SidebarItem key={href} href={href} icon={icon} label={label} />
       ))}

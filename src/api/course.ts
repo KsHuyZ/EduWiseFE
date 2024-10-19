@@ -1,4 +1,4 @@
-import axios from '@/lib/api';
+import api from '@/lib/api';
 
 import {
   CourseCredentials,
@@ -7,32 +7,35 @@ import {
   ICategory,
   Lesson,
   LessonCredentials,
+  TableApiResponse,
   TCourse,
   TVideoCredentials,
 } from '@/types';
-import { TableApiResponse } from '@/types/response';
-
-type CourseCredentialOverride = Omit<
-  CourseCredentials,
-  'tags' | 'categories'
-> & { tags: string[]; categories: string[] };
 
 export const createCourses = (
   course: CourseCredentials
 ): Promise<CourseType> => {
-  const tags = course.tags.map((tag) => tag.name);
-  const categories = course.categories.map((tag) => tag.name);
-  const formatCourse = {
-    ...course,
-    tags,
+  const {
+    name,
     categories,
-  } as CourseCredentialOverride;
+    description,
+    tags,
+    image,
+    level,
+    price,
+    shortDescription,
+  } = course;
   const data = new FormData();
-  Object.keys(formatCourse).forEach((key) => {
-    data.append(key, formatCourse[key as keyof CourseCredentialOverride]);
-  });
+  data.append('name', name);
+  data.append('categories', JSON.stringify(categories));
+  data.append('description', description);
+  data.append('tags', JSON.stringify(tags));
+  data.append('image', image);
+  data.append('level', level);
+  data.append('price', price ? price.toString() : '0');
+  data.append('shortDescription', shortDescription);
 
-  return axios.post('/course/create', data, {
+  return api.post('/courses', data, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 };
@@ -40,19 +43,27 @@ export const createCourses = (
 export const updateCourses = (
   course: CourseCredentials
 ): Promise<CourseType> => {
-  const tags = course.tags.map((tag) => tag.name);
-  const categories = course.categories.map((tag) => tag.name);
-  const formatCourse = {
-    ...course,
-    tags,
+  const {
+    name,
     categories,
-  } as CourseCredentialOverride;
+    description,
+    tags,
+    image,
+    level,
+    price,
+    shortDescription,
+  } = course;
   const data = new FormData();
-  Object.keys(formatCourse).forEach((key) => {
-    data.append(key, formatCourse[key as keyof CourseCredentialOverride]);
-  });
+  data.append('name', name);
+  data.append('categories', JSON.stringify(categories));
+  data.append('description', description);
+  data.append('tags', JSON.stringify(tags));
+  data.append('image', image);
+  data.append('level', level);
+  data.append('price', price ? price.toString() : '0');
+  data.append('shortDescription', shortDescription);
 
-  return axios.put('/course/update', data, {
+  return api.put('/course/update', data, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 };
@@ -63,7 +74,7 @@ export const getCourses = (
   priceMax = 1000000000,
   keyword: string | null
 ): Promise<TableApiResponse<TCourse[]>> =>
-  axios.get('/course/get-all', {
+  api.get('/course/get-all', {
     params: {
       sort,
       priceMin: 0,
@@ -72,30 +83,30 @@ export const getCourses = (
   });
 
 export const getTeacherCourses = (): Promise<CourseType[]> =>
-  axios.get(`/course/get-by-teacher`);
+  api.get(`/course/get-by-teacher`);
 
 export const getCoursesLesson = (id: string): Promise<Lesson[]> =>
-  axios.get(`/lesson/get-lessons?id=${id}`);
+  api.get(`/lesson/get-lessons?id=${id}`);
 
 export const createLesson = (lesson: LessonCredentials): Promise<Lesson> =>
-  axios.post('/lesson/create', lesson);
+  api.post('/lesson/create', lesson);
 
 export const updateLesson = (lesson: LessonCredentials): Promise<Lesson> =>
-  axios.put(`/lesson/update/${lesson.id}`, {
+  api.put(`/lesson/update/${lesson.id}`, {
     title: lesson.title,
     content: lesson.content,
   });
 
 export const getAllCourseCategories = (): Promise<ICategory[]> =>
-  axios.get('/course/categories/get-all');
+  api.get('/course/categories/get-all');
 
 export const getLessonByCourseId = (id: string): Promise<Lesson[]> =>
-  axios.get(`/lesson/get-lessons?id=${id}`);
+  api.get(`/lesson/get-lessons?id=${id}`);
 export const getCourseById = (id: string): Promise<CourseType> =>
-  axios.get(`/course/get-by-id?id=${id}`);
+  api.get(`/course/get-by-id?id=${id}`);
 
 export const deleteLessonById = (id: string) =>
-  axios.delete('/lesson/delete', {
+  api.delete('/lesson/delete', {
     data: id,
   });
 
@@ -106,13 +117,13 @@ export const createVideo = (video: TVideoCredentials) => {
   data.append('idLesson', video.idLesson);
   data.append('description', video.description);
 
-  return axios.post('/video/create', data, {
+  return api.post('/video/create', data, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 };
 
 export const getMyCourse = (): Promise<CourseType[]> =>
-  axios.get('/course/get-by-user');
+  api.get('/course/get-by-user');
 
 export const changeCourseStatus = (id: string, status: ECourseStatus) =>
-  axios.post(`/course/update-status-by-teacher?id=${id}&status=${status}`);
+  api.post(`/course/update-status-by-teacher?id=${id}&status=${status}`);

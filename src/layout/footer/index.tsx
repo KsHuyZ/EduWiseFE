@@ -1,9 +1,17 @@
+'use client';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import React from 'react';
 
 import { Button } from '@/components/ui/button';
 
 const Footer = () => {
+  const pathName = usePathname();
+
+  if (pathName.startsWith('/teacher')) {
+    return <></>;
+  }
+
   return (
     <footer className='bg-white container mt-10'>
       <div className='w-full py-6 lg:py-8'>

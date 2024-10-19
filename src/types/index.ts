@@ -1,6 +1,7 @@
 export * from './cart';
 export * from './category';
 export * from './course';
+export * from './editor';
 export * from './image';
 export * from './level';
 export * from './payment';

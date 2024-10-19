@@ -9,6 +9,7 @@ export const generateNameColor = (name: string) => {
   return `#${paddedColor}`;
 };
 
+export * from './editor';
 export * from './format';
 export * from './storage';
 export * from './time';

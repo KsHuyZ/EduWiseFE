@@ -2,7 +2,7 @@
 
 import { type DialogProps } from '@radix-ui/react-dialog';
 import { Command as CommandPrimitive } from 'cmdk';
-import { Search } from 'lucide-react';
+import { LoaderCircle, Search } from 'lucide-react';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
@@ -40,14 +40,21 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
 
 const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
->(({ className, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input> & {
+    isLoading?: boolean;
+  }
+>(({ className, isLoading, ...props }, ref) => (
   <div className='flex items-center border-b px-3' cmdk-input-wrapper=''>
-    <Search className='mr-2 h-4 w-4 shrink-0 opacity-50' />
+    {isLoading ? (
+      <LoaderCircle className='mr-2 h-4 w-4 shrink-0 opacity-50 animate-spin' />
+    ) : (
+      <Search className='mr-2 h-4 w-4 shrink-0 opacity-50' />
+    )}
+
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
-        'flex h-11 w-full border-none rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-slate-500 disabled:cursor-not-allowed disabled:opacity-50 dark:placeholder:text-slate-400',
+        'flex h-11 w-full border-none rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-slate-500 disabled:cursor-not-allowed disabled:opacity-50 dark:placeholder:text-slate-400 focus:outline-none focus:ring-0',
         className
       )}
       {...props}

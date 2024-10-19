@@ -1,32 +1,16 @@
-import {
-  ELevel,
-  EStatus,
-  ICategory,
-  ImageType,
-  ITag,
-  TQuiz,
-  TUser,
-} from '@/types';
+import { CreateCourseForm } from '@/validator';
+
+import { ELevel, EStatus, ICategory, ITag, TQuiz, TUser } from '@/types';
 
 export type CourseCredentials = {
   id?: string;
-  name: string;
-  description: string;
-  level: string;
-  discount: number;
-  price: number | string;
-  tags: ITag[];
-  categories: ICategory[];
-  file?: any;
-  status?: string;
-};
-
+} & CreateCourseForm;
 export type CourseType = {
   id: string;
   name: string;
   price: number;
   description: string;
-  file: ImageType;
+  image: string;
   categories: ICategory[];
   descriptionShort: string;
   tags: ITag[];

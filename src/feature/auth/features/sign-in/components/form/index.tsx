@@ -42,9 +42,10 @@ const SignInForm = () => {
 
   const onSubmit = async (values: TSignInCredentials) => {
     const result = await signIn(values);
-    const { token, refreshToken, user } = result;
+    const { user, refreshToken, token } = result;
+    ('use server');
+    await setCookies('token', { refreshToken, token });
     await setCookies('user', user);
-    await setCookies('token', { token, refreshToken });
     const callBack = searchParams.get('callBack');
     if (callBack) {
       router.replace(callBack);
@@ -75,7 +76,11 @@ const SignInForm = () => {
 
   useEffect(() => {
     if (error) {
-      const errorMessage = error as unknown as TSignInCredentials;
+      const errorMessage = error as unknown as TSignInCredentials & {
+        message: string;
+      };
+      errorMessage.message &&
+        form.setError('email', { message: errorMessage.message });
       errorMessage.email &&
         form.setError('email', { message: errorMessage.email });
       errorMessage.password &&
@@ -143,7 +148,6 @@ const SignInForm = () => {
           type='submit'
           className='w-full text-center'
           isLoading={isPending}
-          disabled={!form.formState.isDirty}
         >
           Sign in
         </Button>

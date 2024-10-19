@@ -30,7 +30,9 @@ const Courses = () => {
   const { replace } = useRouter();
   const createQueryString = useCallback(
     (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(
+        searchParams as unknown as URLSearchParams
+      );
       if (value) {
         params.set(name, value);
       } else {
@@ -105,7 +107,7 @@ const Courses = () => {
                   <Card className='rounded-md overflow-hidden hover:bg-primary-50 hover:shadow-md group duration-500 h-full'>
                     <div className='relative w-full aspect-video '>
                       <Image
-                        src={course?.file.url ?? ''}
+                        src={course?.image ?? ''}
                         fill
                         className='object-cover'
                         alt='Hihihihi'

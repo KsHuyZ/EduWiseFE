@@ -1,14 +1,25 @@
 'use client';
-import { Menu, Search } from 'lucide-react';
+import { LogOutIcon, Menu, Search, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
+import { deleteCookie } from '@/lib/action';
 import { cn } from '@/lib/utils';
 import { useHeader } from '@/hooks';
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import {
   Sheet,
@@ -16,6 +27,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { useToast } from '@/components/ui/use-toast';
+
+import { TUser } from '@/types';
 
 const headerRoutes = [
   {
@@ -32,12 +46,23 @@ const headerRoutes = [
   },
 ];
 
-const Header = () => {
+const summaryName = (name: string) =>
+  name
+    .split(' ')
+    .map((word) => word[0])
+    .join('');
+
+interface HeaderProps {
+  user?: TUser;
+}
+
+const Header = ({ user }: HeaderProps) => {
   const { scroll } = useHeader();
   const router = useRouter();
   const pathName = usePathname();
   const [open, setOpen] = useState(false);
   const searchParams = useSearchParams();
+  const { toast } = useToast();
   const [value, setValue] = useState(searchParams.get('name') ?? '');
   const [focus, setFocus] = useState(false);
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -54,6 +79,14 @@ const Header = () => {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
+
+  const signOut = async () => {
+    ('use  server');
+    await deleteCookie('user');
+    await deleteCookie('token');
+    router.replace('/sign-in');
+  };
+
   return (
     <>
       <Sheet open={open} onOpenChange={setOpen}>
@@ -142,7 +175,7 @@ const Header = () => {
                       focus || value ? 'w-[500px]' : 'w-12'
                     )}
                     onSubmit={onSubmit}
-                    onClick={() => setFocus(true)}
+                    onFocus={() => setFocus(true)}
                   >
                     <Search className='text-primary-600 w-4 h-4 absolute top-1/2 transform -translate-y-1/2 left-3' />
                     <input
@@ -158,15 +191,63 @@ const Header = () => {
                     />
                   </form>
                 )}
-                <div className='hidden lg:grid grid-cols-2 items-center gap-2'>
-                  <Button onClick={() => router.push('/sign-in')}>Login</Button>
-                  <Button
-                    variant='outline'
-                    onClick={() => router.push('/sign-up')}
-                  >
-                    Register
-                  </Button>
-                </div>
+                {user ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <Avatar className='cursor-pointer'>
+                        <AvatarImage
+                          src={user.avatar ?? '/images/avatar.jpg'}
+                        />
+                        <AvatarFallback>
+                          {summaryName(`${user.firstName} ${user.lastName}`)}
+                        </AvatarFallback>
+                      </Avatar>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>
+                        <div className='flex flex-col'>
+                          <Label className='text-md'>
+                            {user.firstName} {user.lastName}
+                          </Label>
+                          <span className='text-gray-400'>{user.email}</span>
+                        </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() =>
+                          toast({
+                            title: 'This function is not available',
+                            variant: 'default',
+                          })
+                        }
+                      >
+                        <div className='gap-x-2 flex items-center'>
+                          <User size={15} />
+                          <span>Profile</span>
+                        </div>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={signOut}>
+                        <div className='gap-x-2 flex items-center text-red-400'>
+                          <LogOutIcon size={15} />
+                          <span>Logout</span>
+                        </div>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <div className='hidden lg:grid grid-cols-2 items-center gap-2'>
+                    <Button onClick={() => router.push('/sign-in')}>
+                      Login
+                    </Button>
+                    <Button
+                      variant='outline'
+                      onClick={() => router.push('/sign-up')}
+                    >
+                      Register
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

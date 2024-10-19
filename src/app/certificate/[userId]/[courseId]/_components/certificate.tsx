@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { useParams } from 'next/navigation';
 import React from 'react';
 
-import { useCourseInfo } from '@/app/(global)/teacher/courses/(modification-course)/edit/info/[id]/hooks';
+// import { useCourseInfo } from '@/app/(global)/teacher/courses/(modification-course)/edit/info/[id]/hooks';
 import { useCertificate } from '@/app/certificate/[userId]/[courseId]/_hooks';
 import Loading from '@/app/loading';
 
@@ -17,7 +17,8 @@ const Certificate = ({ fullName }: { fullName: string }) => {
     error,
     data: certificate,
   } = useCertificate(userId, courseId);
-  const { data, isLoading } = useCourseInfo(courseId);
+  // const { data, isLoading } = useCourseInfo(courseId);
+  const isLoading = false;
   return isLoading || loading ? (
     <Loading />
   ) : (
@@ -47,7 +48,11 @@ const Certificate = ({ fullName }: { fullName: string }) => {
             </div>
             <div className='text-center mt-8'>
               <div className='w-2/3 mx-auto underline'>
-                <span className='font-bold text-lg'>{data?.name}</span>
+                <span className='font-bold text-lg'>
+                  {
+                    // data?.name
+                  }
+                </span>
               </div>
             </div>
             <div className='text-center mt-6'>

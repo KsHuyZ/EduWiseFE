@@ -1,11 +1,3 @@
-import CreateForm from '@/app/(global)/teacher/courses/(modification-course)/_components/create-form';
+import CreateCourseInfoTab from '@/feature/teacher/features/courses/features/create';
 
-const CreatePage = () => {
-  return (
-    <div>
-      <CreateForm />
-    </div>
-  );
-};
-
-export default CreatePage;
+export default CreateCourseInfoTab;

@@ -32,7 +32,7 @@ import { ChaptersList } from '@/app/(global)/teacher/courses/(modification-cours
 import {
   useLessons,
   useModificationLesson,
-} from '@/app/(global)/teacher/courses/(modification-course)/create/_hook';
+} from '@/feature/teacher/features/courses/hooks';
 
 import { Lesson } from '@/types';
 
@@ -58,8 +58,7 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
   const [currentLesson, setCurrentLesson] = useState<Lesson | undefined>();
   const { data: lessons, isLoading } = useLessons(idCourse);
   const { isPending, mutateAsync: modificationLesson } = useModificationLesson(
-    idCourse!,
-    currentLesson?.id
+    idCourse!
   );
   const { toast } = useToast();
 
@@ -69,10 +68,6 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
       title: '',
     },
   });
-
-  useEffect(() => {
-    form.reset();
-  }, [open]);
 
   const onSelectLesson = (lesson: Lesson) => {
     setOpen(true);

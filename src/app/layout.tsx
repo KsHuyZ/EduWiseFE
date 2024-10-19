@@ -9,6 +9,7 @@ import '@/styles/globals.css';
 // !STARTERCONF This is for demo purposes, remove @/styles/colors.css import immediately
 // import '@/styles/colors.css';
 import { Toaster } from '@/components/ui/toaster';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 import Providers from '@/app/provider';
 import { siteConfig } from '@/constant/config';
@@ -70,7 +71,9 @@ export default async function RootLayout({
           <NextTopLoader color='var(--color-primary-600)' />
           <NextIntlClientProvider messages={messages}>
             <Toaster />
-            <Providers>{children}</Providers>
+            <Providers>
+              <TooltipProvider>{children}</TooltipProvider>
+            </Providers>
           </NextIntlClientProvider>
         </body>
       </html>

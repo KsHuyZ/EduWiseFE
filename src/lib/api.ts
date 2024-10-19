@@ -43,12 +43,7 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (
-      (error.status === 401 || error.status === 403) &&
-      !originalRequest._retry
-    ) {
-      originalRequest._retry = true;
-
+    if (error.status === 401 || error.status === 403) {
       const token = (await getCookies('token')) as Token | undefined;
       const refreshToken = token?.refreshToken;
       if (refreshToken) {
@@ -61,7 +56,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       }
     }
-    return Promise.reject(error?.data.errors);
+    return Promise.reject(error?.data?.errors);
   }
 );
 

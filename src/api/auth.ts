@@ -10,7 +10,12 @@ import {
 
 export const refreshToken = (
   refreshToken: string
-): Promise<RefreshTokenResponse> => api.post('/auth/refresh');
+): Promise<RefreshTokenResponse> =>
+  api.get('/auth/refresh', {
+    headers: {
+      Authorization: `Bearer ${refreshToken}`,
+    },
+  });
 
 export const signOut = () => api.get('/auth/logout');
 

@@ -1,27 +1,16 @@
-import { formatDistance } from 'date-fns';
 import { Award, Clock, GraduationCap, Signal } from 'lucide-react';
 import { Metadata, ResolvingMetadata } from 'next';
 import Link from 'next/link';
 import React from 'react';
 
-import { cn } from '@/lib/utils';
-
 import Input from '@/components/inputs/Input';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel';
 import { Label } from '@/components/ui/label';
 import { Ratings } from '@/components/ui/rating';
 import { Separator } from '@/components/ui/separator';
 
-import { __mockReviews } from '@/__mocks__';
 import { getCourseById } from '@/api';
 import AddCart from '@/app/(global)/courses/[courseId]/_components/add-cart';
 import CourseList from '@/app/(global)/courses/[courseId]/_components/course-list';
@@ -87,7 +76,7 @@ const CourseIdPage = async ({ params: { courseId } }: Props) => {
                 </div>
               </div>
             </div>
-            <ModalPreview img={course.file} name={course.name} />
+            <ModalPreview img={course.image} name={course.name} />
           </div>
         </div>
         <div className='grid grid-cols-3 gap-2 items-start'>
