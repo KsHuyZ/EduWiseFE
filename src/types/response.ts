@@ -11,10 +11,10 @@ export type SignInResponse = {
   tokenExpires: number;
 } & Token;
 
-export type TableApiResponse<T> = {
+export type PaginationResponse<T> = {
   page: number;
   pages: number;
   size: number;
   total: number;
-  items: T;
+  data: T[];
 };

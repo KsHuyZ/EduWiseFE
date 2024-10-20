@@ -76,7 +76,6 @@ export const ChaptersForm = ({ idCourse }: ChaptersFormProps) => {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(currentLesson);
     if (idCourse) {
       const lessonValues = currentLesson
         ? { ...values, id: currentLesson.id }

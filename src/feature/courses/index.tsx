@@ -114,9 +114,8 @@ const CoursesPage = () => {
                 <CourseCardRow course={mockCourse} />
               </div>
               <Paginations
-                onPageChange={(page) => {
-                  // console.log(page);
-                }}
+                // eslint-disable-next-line @typescript-eslint/no-empty-function
+                onPageChange={(page) => {}}
                 currentPage={1}
                 totalCount={20}
                 pageSize={5}

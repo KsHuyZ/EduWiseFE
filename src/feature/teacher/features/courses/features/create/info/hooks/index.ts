@@ -5,14 +5,14 @@ import { QueryKey } from '@/constant';
 
 export const useTags = (title: string) =>
   useQuery({
-    queryKey: [QueryKey.TAG, title],
+    queryKey: [QueryKey.Tag, title],
     queryFn: () => getTagsByName(title),
     enabled: !!title,
   });
 
 export const useCategory = (title: string) =>
   useQuery({
-    queryKey: [QueryKey.CATEGORY, title],
+    queryKey: [QueryKey.Category, title],
     queryFn: () => getCategoriesByName(title),
     enabled: !!title,
   });

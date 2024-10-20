@@ -217,5 +217,8 @@ export function formatTimeToDuration(time: number) {
   if ((duration.minutes ?? 0) > 0) {
     timeString += `${duration.minutes} mins`;
   }
+  if (time < 3600) {
+    timeString += `${time * 1000} secs`;
+  }
   return timeString;
 }

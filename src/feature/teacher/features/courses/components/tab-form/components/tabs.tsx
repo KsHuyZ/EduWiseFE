@@ -12,16 +12,20 @@ const tabsList = (id?: string) => {
     {
       label: 'Course Info',
       value: id
-        ? `/teacher/courses/update/info/${id}`
-        : '/teacher/courses/create/info',
+        ? TeacherPath.UpdateInfoCourse(id)
+        : TeacherPath.CreateInfoCourse,
     },
     {
       label: 'Lesson',
-      value: `/teacher/courses/update/lesson/${id}`,
+      value: TeacherPath.UpdateLessonCourse(id),
     },
     {
       label: 'Addition',
-      value: `/teacher/courses/update/addition/${id}`,
+      value: TeacherPath.UpdateAdditionCourse(id),
+    },
+    {
+      label: 'Settings',
+      value: TeacherPath.SettingCourse(id),
     },
   ];
 };

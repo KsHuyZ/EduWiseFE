@@ -17,7 +17,6 @@ const SidebarItem = ({ icon: Icon, label, href }: SidebarItemProps) => {
     (pathName === '/' && href === '/') ||
     pathName === href ||
     pathName.startsWith(`${href}`);
-  console.log({ href });
   const onClick = () => {
     router.push(href);
   };

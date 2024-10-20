@@ -1,36 +1,28 @@
 import { CreateCourseForm } from '@/validator';
 
-import { ELevel, EStatus, ICategory, ITag, TQuiz, TUser } from '@/types';
+import { ELevel, ICategory, ITag, TQuiz, TUser } from '@/types';
 
 export type CourseCredentials = {
   id?: string;
 } & CreateCourseForm;
-export type CourseType = {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-  categories: ICategory[];
-  descriptionShort: string;
-  tags: ITag[];
-  chapters?: Lesson[];
-  userResponse: TUser;
-};
 
 export type TCourse = {
   id: string;
   image: string;
   name: string;
-  videoPreview: string;
+  videoPreview?: string;
   description: string;
   shortDescription: string;
   createdBy: TUser;
   level: ELevel;
-  status: EStatus;
+  status: ECourseStatus;
+  tags: ITag[];
+  categories: ICategory[];
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
+  rate?: number;
+  lessons: number;
   deletedAt?: string;
   price: number;
   duration: number;
@@ -82,8 +74,6 @@ export type TVideoCredentials = {
 };
 
 export enum ECourseStatus {
-  CREATE = 'on_create',
-  PUBLIC = 'public',
-  PRIVATE = 'private',
-  DELETE = 'delete',
+  Publish = 'publish',
+  Draft = 'draft',
 }

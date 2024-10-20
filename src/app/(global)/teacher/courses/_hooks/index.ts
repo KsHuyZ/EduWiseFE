@@ -1,19 +1,13 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useToast } from '@/components/ui/use-toast';
 
 import { createQuiz } from '@/api';
-import { createVideo, deleteLessonById, getTeacherCourses } from '@/api';
+import { createVideo, deleteLessonById } from '@/api';
 import { validateError } from '@/utils';
 
 import { TQuizCredentials } from '@/types';
 import { TVideoCredentials } from '@/types';
-
-export const useTeacherCourse = () =>
-  useQuery({
-    queryKey: ['teacher-course'],
-    queryFn: () => getTeacherCourses(),
-  });
 
 export const useDeleteLesson = () => {
   const queryClient = useQueryClient();

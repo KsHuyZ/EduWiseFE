@@ -16,10 +16,10 @@ import ModalPreview from '@/app/(global)/courses/[courseId]/_components/modal-pr
 import PayMent from '@/app/(global)/courses/[courseId]/_components/payment';
 import { formatPrice, generateNameColor } from '@/utils';
 
-import { CourseType } from '@/types';
+import { TCourse } from '@/types';
 
 interface ICourseViewProps {
-  course: CourseType;
+  course: TCourse;
 }
 
 const CourseView = ({ course }: ICourseViewProps) => {

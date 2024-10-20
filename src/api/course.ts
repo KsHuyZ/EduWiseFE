@@ -2,19 +2,16 @@ import api from '@/lib/api';
 
 import {
   CourseCredentials,
-  CourseType,
   ECourseStatus,
   ICategory,
   Lesson,
   LessonCredentials,
-  TableApiResponse,
+  PaginationResponse,
   TCourse,
   TVideoCredentials,
 } from '@/types';
 
-export const createCourses = (
-  course: CourseCredentials
-): Promise<CourseType> => {
+export const createCourses = (course: CourseCredentials): Promise<TCourse> => {
   const {
     name,
     categories,
@@ -40,9 +37,7 @@ export const createCourses = (
   });
 };
 
-export const updateCourses = (
-  course: CourseCredentials
-): Promise<CourseType> => {
+export const updateCourses = (course: CourseCredentials): Promise<TCourse> => {
   const {
     name,
     categories,
@@ -73,7 +68,7 @@ export const getCourses = (
   priceMin = 0,
   priceMax = 1000000000,
   keyword: string | null
-): Promise<TableApiResponse<TCourse[]>> =>
+): Promise<PaginationResponse<TCourse>> =>
   api.get('/course/get-all', {
     params: {
       sort,
@@ -82,8 +77,19 @@ export const getCourses = (
     },
   });
 
-export const getTeacherCourses = (): Promise<CourseType[]> =>
-  api.get(`/course/get-by-teacher`);
+export const getTeacherCourses = ({
+  status,
+  name,
+}: {
+  status?: string;
+  name?: string;
+}): Promise<PaginationResponse<TCourse>> =>
+  api.get(`/courses/teacher`, {
+    params: {
+      name,
+      status,
+    },
+  });
 
 export const getCoursesLesson = (id: string): Promise<Lesson[]> =>
   api.get(`/lesson/get-lessons?id=${id}`);
@@ -102,7 +108,7 @@ export const getAllCourseCategories = (): Promise<ICategory[]> =>
 
 export const getLessonByCourseId = (id: string): Promise<Lesson[]> =>
   api.get(`/lesson/get-lessons?id=${id}`);
-export const getCourseById = (id: string): Promise<CourseType> =>
+export const getCourseById = (id: string): Promise<TCourse> =>
   api.get(`/course/get-by-id?id=${id}`);
 
 export const deleteLessonById = (id: string) =>
@@ -122,7 +128,7 @@ export const createVideo = (video: TVideoCredentials) => {
   });
 };
 
-export const getMyCourse = (): Promise<CourseType[]> =>
+export const getMyCourse = (): Promise<TCourse[]> =>
   api.get('/course/get-by-user');
 
 export const changeCourseStatus = (id: string, status: ECourseStatus) =>

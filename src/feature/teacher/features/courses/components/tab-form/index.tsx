@@ -39,7 +39,7 @@ const TabForm = ({ children }: { children: React.ReactNode }) => {
       if (!result) return;
       try {
         const result = await modificationCourse({ ...values, id });
-        router.push(TeacherPath.UpdateInfoCourse(result.id));
+        router.push(TeacherPath.UpdateLessonCourse(result.id));
         toast({
           title: `${id ? 'Update' : 'Create'} course success!`,
           variant: 'success',

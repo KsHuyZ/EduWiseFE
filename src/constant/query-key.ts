@@ -1,5 +1,7 @@
 export enum QueryKey {
-  COURSES = 'courses',
-  TAG = 'tag',
-  CATEGORY = 'category',
+  Courses = 'courses',
+  Tag = 'tag',
+  Category = 'category',
+  Lessons = 'lessons',
+  TeacherCourse = 'teacher-course'
 }

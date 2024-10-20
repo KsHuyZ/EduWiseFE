@@ -1,7 +1,7 @@
-import { CourseType, TUser } from '@/types';
+import { TCourse, TUser } from '@/types';
 
 export type TCartResponse = {
-  courseResponse: CourseType;
+  courseResponse: TCourse;
   id: string;
   status: string;
   userResponse: TUser;

@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/form';
 import { useToast } from '@/components/ui/use-toast';
 
+import { TeacherPath } from '@/constant';
 import {
   useGoogleSignInQuery,
   useSignIn,
@@ -52,7 +53,7 @@ const SignInForm = () => {
       return;
     }
     if (user.role.includes(ERoles.TEACHER)) {
-      router.replace('/teacher');
+      router.replace(TeacherPath.Dashboard);
       return;
     }
     router.replace(`/`);
